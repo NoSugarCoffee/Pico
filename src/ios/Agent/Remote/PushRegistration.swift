@@ -23,6 +23,28 @@ enum PushRegistrationError: Error, Equatable {
     }
 }
 
+/// The link a tapped Pico notification opens (apns spec §5).
+enum PushTap {
+    /// The extension leaves the link in userInfo. When it crashed or ran out of time, iOS showed the
+    /// placeholder and the link is still sealed in the envelope, so it is opened here with the same keys.
+    static func link(userInfo: [AnyHashable: Any]) -> URL? {
+        link(userInfo: userInfo, keys: { try KeychainPushKeyStore(bundle: .main) })
+    }
+
+    static func link(userInfo: [AnyHashable: Any], keys: () throws -> any PushKeyStore) -> URL? {
+        if let link = userInfo[PushUserInfo.urlKey] as? String {
+            return URL(string: link)
+        }
+        guard userInfo["pico"] != nil else { return nil }
+        do {
+            return try PushNoticeOpener.open(userInfo: userInfo, keys: keys()).url.flatMap(URL.init(string:))
+        } catch {
+            logger.error("[PicoPush] tapped notice could not be opened: \(error)")
+            return nil
+        }
+    }
+}
+
 /// What this phone last registered on each host, so a changed token is noticed on launch (apns spec §4).
 struct PushRegistrationRecord: Codable, Equatable {
     var token: String

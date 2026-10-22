@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import MinisRemote
 import PicoPush
@@ -94,5 +95,25 @@ final class PushRegistrationTests: XCTestCase {
     func testAnOldHostdIsAskedToUpdate() {
         let error = HostEventError.server(code: "bad_request", message: "unknown command \"apns register\"")
         XCTAssertTrue(PushRegistration.message(for: error).contains("too old"))
+    }
+
+    func testATapUsesTheLinkTheExtensionLeft() {
+        let url = PushTap.link(userInfo: [PushUserInfo.urlKey: "pico://host-event/mac-mini/01A"], keys: { InMemoryPushKeyStore() })
+        XCTAssertEqual(url?.absoluteString, "pico://host-event/mac-mini/01A")
+    }
+
+    func testATapWithoutTheExtensionOpensTheEnvelope() throws {
+        let key = SymmetricKey(size: .bits256)
+        let notice = try JSONEncoder().encode(SealedNotice(title: "t", body: "b", url: "pico://host-event/mac-mini/01B"))
+        let sealed = try AES.GCM.seal(notice, using: key, authenticating: PushCrypto.additionalData(host: "mac-mini"))
+        let userInfo: [AnyHashable: Any] = ["pico": ["v": 1, "host": "mac-mini", "k": "k1", "c": try XCTUnwrap(sealed.combined).base64EncodedString()]]
+        let keys = InMemoryPushKeyStore()
+        try keys.setKey(key.withUnsafeBytes { Data($0) }, host: "mac-mini", keyID: "k1")
+        XCTAssertEqual(PushTap.link(userInfo: userInfo, keys: { keys })?.absoluteString, "pico://host-event/mac-mini/01B")
+        XCTAssertNil(PushTap.link(userInfo: userInfo, keys: { InMemoryPushKeyStore() }))
+    }
+
+    func testOtherNotificationsHaveNoPicoLink() {
+        XCTAssertNil(PushTap.link(userInfo: ["sessionId": "s1"], keys: { InMemoryPushKeyStore() }))
     }
 }

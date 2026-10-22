@@ -2,7 +2,6 @@ import AppIntents
 import Foundation
 import UniformTypeIdentifiers
 import UserNotifications
-import PicoPush // fork(remote-host):
 
 /// Sends a prompt to the Minis AI agent and returns immediately with structured session info.
 /// The agent continues running in the background — use Get Session Status to poll for completion.
@@ -503,7 +502,7 @@ final class ShortcutNotificationDelegate: NSObject, UNUserNotificationCenterDele
     ) {
         let userInfo = response.notification.request.content.userInfo
         // fork(remote-host): a Pico notification from minis-hostd, decrypted by PicoNotificationService.
-        if let link = userInfo[PushUserInfo.urlKey] as? String, let url = URL(string: link) {
+        if let url = PushTap.link(userInfo: userInfo) {
             DispatchQueue.main.async { HostEventOpener.open(url) }
         }
         if let sessionId = userInfo["sessionId"] as? String, !sessionId.isEmpty {
