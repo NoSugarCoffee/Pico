@@ -129,6 +129,17 @@ public struct HostdDoctor: Decodable, Equatable, Sendable {
     public var allOK: Bool { checks.allSatisfy(\.ok) }
 }
 
+/// `apns register --json`: the pending key hostd drew for this phone (apns spec §4); `key` is base64.
+public struct HostdAPNsRegistration: Decodable, Equatable, Sendable {
+    public let keyId: String
+    public let key: String
+
+    public init(keyId: String, key: String) {
+        self.keyId = keyId
+        self.key = key
+    }
+}
+
 struct HostEventListReply: Decodable { let events: [HostEventSummary] }
 struct HostEventReply: Decodable { let event: HostEvent }
 struct HostEventBatchReply: Decodable { let batch: HostEventBatch }
@@ -157,5 +168,17 @@ extension HostEventClient {
 
     public func doctor(host: String, pushTest: Bool) async throws -> HostdDoctor {
         try await call(host: host, arguments: ["doctor"] + (pushTest ? ["--push-test"] : []))
+    }
+
+    public func registerAPNs(host: String, deviceToken: String, topic: String, environment: String) async throws
+        -> HostdAPNsRegistration {
+        try await call(host: host, arguments: [
+            "apns", "register", deviceToken, "--topic", topic, "--environment", environment,
+        ])
+    }
+
+    /// Call only after the key from `registerAPNs` is saved: from then on hostd seals notices with it.
+    public func activateAPNs(host: String, keyID: String) async throws -> HostEventAck {
+        try await call(host: host, arguments: ["apns", "activate", keyID])
     }
 }

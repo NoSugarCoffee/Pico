@@ -64,6 +64,17 @@ final class HostEventClientTests: XCTestCase {
         XCTAssertEqual(scripts, [#""$HOME/.minis/bin/minis-hostd" 'events' 'ack' '01A' '01B' --json"#])
     }
 
+    func testRegisterAPNsQuotesItsArgumentsAndReturnsTheKey() async throws {
+        let runner = RecordingRunner(stdout: #"{"schemaVersion":1,"keyId":"0a1b","key":"AAEC"}"# + "\n", exitStatus: 0)
+        let reply = try await HostEventClient(runner: runner).registerAPNs(
+            host: "mac-mini", deviceToken: "0f1e", topic: "com.example.pico", environment: "development")
+        XCTAssertEqual(reply, HostdAPNsRegistration(keyId: "0a1b", key: "AAEC"))
+        let scripts = await runner.scripts
+        XCTAssertEqual(scripts, [
+            #""$HOME/.minis/bin/minis-hostd" 'apns' 'register' '0f1e' '--topic' 'com.example.pico' '--environment' 'development' --json"#,
+        ])
+    }
+
     func testExit2IsTheServersError() async {
         let line = #"{"schemaVersion":1,"error":{"code":"not_found","message":"No event 01Z."}}"#
         let runner = RecordingRunner(stdout: line, exitStatus: 2, stderr: "minis-hostd: No event 01Z.")

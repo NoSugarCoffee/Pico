@@ -62,6 +62,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         // the wrong (new) session. The .onAppear registration in MinisApp
         // remains as an idempotent backstop.
         ShortcutNotificationDelegate.shared.register()
+        PushRegistration.refreshOnLaunch() // fork(remote-host): re-register hosts if the APNs token changed
 
         // Refresh the dynamic shortcut list every cold launch. The
         // items themselves are stable, but their localized titles
@@ -79,6 +80,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         // `windowScene(_:performActionFor:completionHandler:)` rather
         // than the UIApplication delegate. See SceneDelegate below.
         return true
+    }
+
+    // fork(remote-host): APNs tokens for Pico notifications from minis-hostd (apns spec §4).
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Task { @MainActor in PushTokenBroker.shared.received(deviceToken) }
+    }
+
+    // fork(remote-host):
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        Task { @MainActor in PushTokenBroker.shared.failed(error) }
     }
 
     /// Tell UIKit to instantiate our `SceneDelegate` for every window

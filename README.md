@@ -77,6 +77,10 @@ and scan the code it prints in Pico: Settings → Remote Hosts → Add Host. For
 mail and GitHub, install the daemon as a service with `--host-name` and fill in its configuration:
 see [host/minis-hostd](host/minis-hostd/README.md#install).
 
+With a paid Apple team, add `--keep-push` to the build script and the notifications arrive as
+Pico's own, straight from your computer through Apple; without one they come through the Bark app.
+See [Pico notifications instead of Bark](host/minis-hostd/README.md#pico-notifications-instead-of-bark).
+
 ---
 
 ## Building from source

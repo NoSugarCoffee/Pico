@@ -16,16 +16,29 @@ struct HostNotificationsView: View {
     @State private var events: EventsState?
     @State private var isLoading = false
     @State private var copiedNotice: String?
+    @State private var pushRecord: PushRegistrationRecord?
+    @State private var pushState: PushRegistrationState = .idle
+
+    private enum PushRegistrationState: Equatable {
+        case idle
+        case registering
+        case registered
+        case failed(String)
+    }
 
     var body: some View {
         List {
             installSection
+            picoNotificationsSection
             statusSection
             eventsSection
         }
         .navigationTitle(RemoteHostL10n.string("Notifications"))
         .navigationBarTitleDisplayMode(.inline)
-        .task { await load() }
+        .task {
+            pushRecord = PushRegistration.record(host: hostName)
+            await load()
+        }
         .refreshable { await load() }
     }
 
@@ -51,6 +64,58 @@ struct HostNotificationsView: View {
                     Text(copiedNotice).foregroundStyle(.green)
                 }
             }
+        }
+    }
+
+    private var picoNotificationsSection: some View {
+        Section {
+            Button {
+                Task { await registerThisPhone() }
+            } label: {
+                HStack {
+                    Text(RemoteHostL10n.string("Send to This iPhone"))
+                    if pushState == .registering {
+                        Spacer()
+                        ProgressView()
+                    }
+                }
+            }
+            .disabled(pushState == .registering)
+            switch pushState {
+            case .registered:
+                Label(RemoteHostL10n.string("This iPhone is registered. Run minis-hostd doctor --push-test on \(hostName) to try it."), systemImage: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+            case .failed(let message):
+                Text(message)
+                    .font(.callout)
+                    .foregroundStyle(.red)
+                    .textSelection(.enabled)
+            case .idle, .registering:
+                if let lastError = pushRecord?.lastError {
+                    Text(lastError)
+                        .font(.callout)
+                        .foregroundStyle(.red)
+                        .textSelection(.enabled)
+                } else if pushRecord != nil {
+                    Text(RemoteHostL10n.string("Notices from \(hostName) come to this iPhone."))
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } header: {
+            Text(RemoteHostL10n.string("Pico Notifications"))
+        } footer: {
+            Text(RemoteHostL10n.string("For a Pico built with your own paid Apple team. On \(hostName), turn on [apns] in ~/.minis/hostd/config.toml with your APNs key in place of [bark], then tap Send to This iPhone."))
+        }
+    }
+
+    private func registerThisPhone() async {
+        pushState = .registering
+        do {
+            try await PushRegistration.register(host: hostName, using: try .live(services: services))
+            pushRecord = PushRegistration.record(host: hostName)
+            pushState = .registered
+        } catch {
+            pushState = .failed(PushRegistration.message(for: error))
         }
     }
 
