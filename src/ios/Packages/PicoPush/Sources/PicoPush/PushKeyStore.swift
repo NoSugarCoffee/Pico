@@ -6,6 +6,7 @@ import Security
 public protocol PushKeyStore: Sendable {
     func setKey(_ key: Data, host: String, keyID: String) throws
     func key(host: String, keyID: String) throws -> Data?
+    func deleteKey(host: String, keyID: String) throws
 }
 
 public enum PushKeyStoreError: Error, Equatable {
@@ -60,6 +61,13 @@ public struct KeychainPushKeyStore: PushKeyStore {
         }
     }
 
+    public func deleteKey(host: String, keyID: String) throws {
+        let status = SecItemDelete(baseQuery(host: host, keyID: keyID) as CFDictionary)
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            throw PushKeyStoreError.keychain(operation: "delete", status: status)
+        }
+    }
+
     public func key(host: String, keyID: String) throws -> Data? {
         var query = baseQuery(host: host, keyID: keyID)
         query[kSecReturnData as String] = true
@@ -86,6 +94,10 @@ public final class InMemoryPushKeyStore: PushKeyStore, @unchecked Sendable {
 
     public func key(host: String, keyID: String) throws -> Data? {
         lock.withLock { keys["\(host)/\(keyID)"] }
+    }
+
+    public func deleteKey(host: String, keyID: String) throws {
+        lock.withLock { _ = keys.removeValue(forKey: "\(host)/\(keyID)") }
     }
 }
 

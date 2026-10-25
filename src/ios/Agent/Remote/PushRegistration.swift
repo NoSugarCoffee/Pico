@@ -182,6 +182,19 @@ enum PushRegistration {
         Dependencies.liveRecords()[host]
     }
 
+    /// A removed host leaves no key behind and no record that would claim its name is still registered.
+    static func forget(host: String) {
+        var records = Dependencies.liveRecords()
+        guard let record = records.removeValue(forKey: host) else { return }
+        Dependencies.saveLiveRecords(records)
+        do {
+            try KeychainPushKeyStore(bundle: .main).deleteKey(host: host, keyID: record.keyID)
+        } catch {
+            logger.error("[PicoPush] could not delete the key of \(host): \(error)")
+        }
+        logger.info("[PicoPush] forgot \(host)")
+    }
+
     /// Set while the stored records cannot be read, because registering again replaces the blob and the
     /// hosts only survive in the backup `liveRecords` keeps. The backup itself stays until the user removes
     /// the app, so a rebuilt list does not throw away what was there.
@@ -210,6 +223,14 @@ enum PushRegistration {
 }
 
 extension PushRegistration.Dependencies {
+    static func saveLiveRecords(_ records: [String: PushRegistrationRecord]) {
+        do {
+            UserDefaults.standard.set(try JSONEncoder().encode(records), forKey: PushRegistration.recordsKey)
+        } catch {
+            logger.error("[PicoPush] saving registration records failed: \(error)")
+        }
+    }
+
     static func liveRecords() -> [String: PushRegistrationRecord] {
         guard let data = UserDefaults.standard.data(forKey: PushRegistration.recordsKey) else { return [:] }
         do {
@@ -252,12 +273,6 @@ extension PushRegistration.Dependencies {
             saveKey: { key, host, keyID in try keys.setKey(key, host: host, keyID: keyID) },
             activate: { host, keyID in _ = try await client.activateAPNs(host: host, keyID: keyID) },
             records: liveRecords,
-            saveRecords: { records in
-                do {
-                    UserDefaults.standard.set(try JSONEncoder().encode(records), forKey: PushRegistration.recordsKey)
-                } catch {
-                    logger.error("[PicoPush] saving registration records failed: \(error)")
-                }
-            })
+            saveRecords: saveLiveRecords)
     }
 }

@@ -122,6 +122,15 @@ final class PushNoticeTests: XCTestCase {
         }
     }
 
+    func testDeletingAKeyMakesTheNoticeUnopenable() throws {
+        let vector = try vector()
+        let keys = InMemoryPushKeyStore()
+        try keys.setKey(vector.key, host: "mac-mini", keyID: "0123456789abcdef")
+        try keys.deleteKey(host: "mac-mini", keyID: "0123456789abcdef")
+        XCTAssertNil(try keys.key(host: "mac-mini", keyID: "0123456789abcdef"))
+        try keys.deleteKey(host: "mac-mini", keyID: "0123456789abcdef")
+    }
+
     func testDisplayRewritesAnOpenedNoticeAndDropsTheEnvelope() throws {
         let vector = try vector()
         let keys = InMemoryPushKeyStore()

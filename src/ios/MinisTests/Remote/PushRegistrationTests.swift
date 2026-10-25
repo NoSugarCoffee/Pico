@@ -93,6 +93,25 @@ final class PushRegistrationTests: XCTestCase {
         XCTAssertNil(recorder.records["mac-mini"])
     }
 
+    func testForgettingAHostDropsOnlyItsRecord() throws {
+        let defaults = UserDefaults.standard
+        let saved = defaults.data(forKey: PushRegistration.recordsKey)
+        defer {
+            if let saved {
+                defaults.set(saved, forKey: PushRegistration.recordsKey)
+            } else {
+                defaults.removeObject(forKey: PushRegistration.recordsKey)
+            }
+        }
+        try defaults.set(JSONEncoder().encode([
+            "mac-mini": PushRegistrationRecord(token: "0f1e", keyID: "k1", lastError: nil),
+            "other": PushRegistrationRecord(token: "0f1e", keyID: "k2", lastError: nil),
+        ]), forKey: PushRegistration.recordsKey)
+        PushRegistration.forget(host: "mac-mini")
+        XCTAssertNil(PushRegistration.record(host: "mac-mini"))
+        XCTAssertEqual(PushRegistration.record(host: "other")?.keyID, "k2")
+    }
+
     func testUnreadableRecordsAreKeptAsideAndReported() throws {
         let defaults = UserDefaults.standard
         let saved = defaults.data(forKey: PushRegistration.recordsKey)
