@@ -26,22 +26,27 @@ final class NotificationService: UNNotificationServiceExtension {
 
     private static func opened(_ content: UNMutableNotificationContent) -> UNNotificationContent {
         do {
-            let keys = try KeychainPushKeyStore(bundle: .main)
-            let notice = try PushNoticeOpener.open(userInfo: content.userInfo, keys: keys)
-            content.title = notice.title
-            content.body = notice.body
-            var userInfo = content.userInfo
-            userInfo[PushUserInfo.urlKey] = notice.url
-            userInfo["pico"] = nil
-            content.userInfo = userInfo
-        } catch PushOpenError.notAPicoNotice {
-            return content
-        } catch let PushOpenError.noKey(host), let PushOpenError.undecryptable(host) {
-            // The envelope stays, so the tap opens it again once the phone has a key that works.
-            content.body = PushCrypto.failureBody(host: host)
+            let display = PushDisplayPolicy.display(
+                title: content.title,
+                body: content.body,
+                userInfo: content.userInfo,
+                keys: try KeychainPushKeyStore(bundle: .main),
+                failureBody: { host in
+                    String(
+                        localized: "Pico could not decrypt this notice. Open Settings → Remote Hosts → \(host) → Notifications and tap Send to This iPhone.",
+                        table: "RemotePush", bundle: .main)
+                },
+                unopenableBody: String(
+                    localized: "Pico could not open this notice. Open Settings → Remote Hosts → your host → Notifications and tap Send to This iPhone.",
+                    table: "RemotePush", bundle: .main))
+            content.title = display.title
+            content.body = display.body
+            content.userInfo = display.userInfo
         } catch {
-            NSLog("[PicoPush] the notice could not be opened: %@", String(describing: error))
-            content.body = PushCrypto.unopenableBody
+            NSLog("[PicoPush] no key store for the notice: %@", String(describing: error))
+            content.body = String(
+                localized: "Pico could not open this notice. Open Settings → Remote Hosts → your host → Notifications and tap Send to This iPhone.",
+                table: "RemotePush", bundle: .main)
         }
         return content
     }

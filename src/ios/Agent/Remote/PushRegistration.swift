@@ -182,12 +182,17 @@ enum PushRegistration {
         Dependencies.liveRecords()[host]
     }
 
-    /// Set when a records blob could not be decoded, because registering again replaces it and the host
-    /// list only survives in the backup `liveRecords` keeps.
+    /// Set while the stored records cannot be read, because registering again replaces the blob and the
+    /// hosts only survive in the backup `liveRecords` keeps. The backup itself stays until the user removes
+    /// the app, so a rebuilt list does not throw away what was there.
     static func recordsProblem() -> String? {
-        let backups = UserDefaults.standard.dictionaryRepresentation().keys
-            .filter { $0.hasPrefix(unreadableRecordsKeyPrefix) }
-        guard !backups.isEmpty else { return nil }
+        let defaults = UserDefaults.standard
+        let hasBackup = defaults.dictionaryRepresentation().keys.contains { $0.hasPrefix(unreadableRecordsKeyPrefix) }
+        guard hasBackup else { return nil }
+        if let data = defaults.data(forKey: recordsKey),
+           (try? JSONDecoder().decode([String: PushRegistrationRecord].self, from: data)) != nil {
+            return nil
+        }
         return RemoteHostL10n.string("Pico could not read the list of hosts this iPhone registered on. It kept a copy, and Send to This iPhone registers a host again.")
     }
 
@@ -224,13 +229,6 @@ extension PushRegistration.Dependencies {
         logger.info("[PicoPush] kept the unreadable registration records as \(key)")
     }
 
-    static func clearUnreadableRecordsBackups() {
-        for key in UserDefaults.standard.dictionaryRepresentation().keys
-        where key.hasPrefix(PushRegistration.unreadableRecordsKeyPrefix) {
-            UserDefaults.standard.removeObject(forKey: key)
-        }
-    }
-
     static func live(services: RemoteServices) throws -> Self {
         let keys = try KeychainPushKeyStore(bundle: .main)
         let client = HostEventClient(runner: services.executor)
@@ -252,8 +250,6 @@ extension PushRegistration.Dependencies {
             saveRecords: { records in
                 do {
                     UserDefaults.standard.set(try JSONEncoder().encode(records), forKey: PushRegistration.recordsKey)
-                    // The blob decodes again, so the copies kept from a corrupt one are only clutter.
-                    clearUnreadableRecordsBackups()
                 } catch {
                     logger.error("[PicoPush] saving registration records failed: \(error)")
                 }

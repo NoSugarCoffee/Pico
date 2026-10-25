@@ -93,15 +93,6 @@ final class PushRegistrationTests: XCTestCase {
         XCTAssertNil(recorder.records["mac-mini"])
     }
 
-    func testARebuiltBlobClearsTheUnreadableCopies() {
-        let defaults = UserDefaults.standard
-        let key = PushRegistration.unreadableRecordsKeyPrefix + "test-\(UUID().uuidString)"
-        defaults.set(Data("stale".utf8), forKey: key)
-        PushRegistration.Dependencies.clearUnreadableRecordsBackups()
-        XCTAssertNil(defaults.data(forKey: key))
-        XCTAssertNil(PushRegistration.recordsProblem())
-    }
-
     func testUnreadableRecordsAreKeptAsideAndReported() throws {
         let defaults = UserDefaults.standard
         let saved = defaults.data(forKey: PushRegistration.recordsKey)
@@ -124,6 +115,12 @@ final class PushRegistrationTests: XCTestCase {
         XCTAssertEqual(backups.count, 1)
         XCTAssertEqual(defaults.data(forKey: try XCTUnwrap(backups.first)), Data("not a records blob".utf8))
         XCTAssertNotNil(PushRegistration.recordsProblem())
+
+        // Rebuilding one host writes a blob that decodes: the warning goes, the copy stays for recovery.
+        let rebuilt = ["mac-mini": PushRegistrationRecord(token: "0f1e", keyID: "k1", lastError: nil)]
+        defaults.set(try JSONEncoder().encode(rebuilt), forKey: PushRegistration.recordsKey)
+        XCTAssertNil(PushRegistration.recordsProblem())
+        XCTAssertEqual(defaults.data(forKey: try XCTUnwrap(backups.first)), Data("not a records blob".utf8))
     }
 
     func testDeniedNotificationsStopBeforeTheHost() async {

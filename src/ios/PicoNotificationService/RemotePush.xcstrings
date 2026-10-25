@@ -1,0 +1,232 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Pico could not decrypt this notice. Open Settings → Remote Hosts → %@ → Notifications and tap Send to This iPhone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico konnte diese Mitteilung nicht entschlüsseln. Öffne Einstellungen → Remote-Hosts → %@ → Mitteilungen und tippe auf An dieses iPhone senden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico could not decrypt this notice. Open Settings → Remote Hosts → %@ → Notifications and tap Send to This iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico no pudo descifrar este aviso. Abre Ajustes → Hosts remotos → %@ → Notificaciones y toca Enviar a este iPhone."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi na-decrypt ng Pico ang abisong ito. Buksan ang Settings → Remote Hosts → %@ → Notifications at i-tap ang Ipadala sa iPhone na Ito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico n’a pas pu déchiffrer cette notification. Ouvrez Réglages → Hôtes distants → %@ → Notifications et touchez Envoyer à cet iPhone."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico nije mogao dešifrirati ovu obavijest. Otvorite Postavke → Udaljeni hostovi → %@ → Obavijesti i dodirnite Pošalji na ovaj iPhone."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico tidak bisa mendekripsi notifikasi ini. Buka Pengaturan → Remote Hosts → %@ → Notifikasi dan ketuk Kirim ke iPhone Ini."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico はこの通知を復号できませんでした。「設定」→ リモートホスト → %@ →「通知」を開き、「このiPhoneに送信」をタップしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico가 이 알림을 복호화하지 못했습니다. 설정 → 원격 호스트 → %@ → 알림을 열고 이 iPhone으로 보내기를 탭하세요."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico tidak dapat menyahsulit notis ini. Buka Tetapan → Remote Hosts → %@ → Notis dan ketik Hantar ke iPhone Ini."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico nie mógł odszyfrować tego powiadomienia. Otwórz Ustawienia → Zdalne hosty → %@ → Powiadomienia i stuknij Wyślij na ten iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Pico não conseguiu descriptografar este aviso. Abra Ajustes → Hosts remotos → %@ → Notificações e toque em Enviar para este iPhone."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico nu a putut decripta această notificare. Deschideți Setări → Hosturi la distanță → %@ → Notificări și atingeți Trimite pe acest iPhone."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico не смог расшифровать это уведомление. Откройте «Настройки» → «Удалённые хосты» → %@ → «Уведомления» и нажмите «Отправить на этот iPhone»."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico ถอดรหัสการแจ้งเตือนนี้ไม่ได้ เปิดการตั้งค่า → Remote Hosts → %@ → การแจ้งเตือน แล้วแตะส่งไปยัง iPhone เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico bu bildirimin şifresini çözemedi. Ayarlar → Uzak Hostlar → %@ → Bildirimler bölümünü açıp Bu iPhone'a Gönder'e dokunun."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 无法解密此通知。请打开“设置”→“远程主机”→ %@ →“通知”，然后轻点“发送到此 iPhone”。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 無法解密這則通知。請開啟「設定」→「遠端主機」→ %@ →「通知」，然後點一下「傳送到這部 iPhone」。"
+          }
+        }
+      }
+    },
+    "Pico could not open this notice. Open Settings → Remote Hosts → your host → Notifications and tap Send to This iPhone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico konnte diese Mitteilung nicht öffnen. Öffne Einstellungen → Remote-Hosts → dein Host → Mitteilungen und tippe auf An dieses iPhone senden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico could not open this notice. Open Settings → Remote Hosts → your host → Notifications and tap Send to This iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico no pudo abrir este aviso. Abre Ajustes → Hosts remotos → tu host → Notificaciones y toca Enviar a este iPhone."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi nabuksan ng Pico ang abisong ito. Buksan ang Settings → Remote Hosts → host mo → Notifications at i-tap ang Ipadala sa iPhone na Ito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico n’a pas pu ouvrir cette notification. Ouvrez Réglages → Hôtes distants → votre hôte → Notifications et touchez Envoyer à cet iPhone."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico nije mogao otvoriti ovu obavijest. Otvorite Postavke → Udaljeni hostovi → vaš host → Obavijesti i dodirnite Pošalji na ovaj iPhone."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico tidak bisa membuka notifikasi ini. Buka Pengaturan → Remote Hosts → host Anda → Notifikasi dan ketuk Kirim ke iPhone Ini."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico はこの通知を開けませんでした。「設定」→ リモートホスト → ホスト →「通知」を開き、「このiPhoneに送信」をタップしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico가 이 알림을 열지 못했습니다. 설정 → 원격 호스트 → 호스트 → 알림을 열고 이 iPhone으로 보내기를 탭하세요."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico tidak dapat membuka notis ini. Buka Tetapan → Remote Hosts → host anda → Notis dan ketik Hantar ke iPhone Ini."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico nie mógł otworzyć tego powiadomienia. Otwórz Ustawienia → Zdalne hosty → twój host → Powiadomienia i stuknij Wyślij na ten iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Pico não conseguiu abrir este aviso. Abra Ajustes → Hosts remotos → seu host → Notificações e toque em Enviar para este iPhone."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico nu a putut deschide această notificare. Deschideți Setări → Hosturi la distanță → hostul dvs. → Notificări și atingeți Trimite pe acest iPhone."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico не смог открыть это уведомление. Откройте «Настройки» → «Удалённые хосты» → ваш хост → «Уведомления» и нажмите «Отправить на этот iPhone»."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico เปิดการแจ้งเตือนนี้ไม่ได้ เปิดการตั้งค่า → Remote Hosts → host ของคุณ → การแจ้งเตือน แล้วแตะส่งไปยัง iPhone เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico bu bildirimi açamadı. Ayarlar → Uzak Hostlar → hostunuz → Bildirimler bölümünü açıp Bu iPhone'a Gönder'e dokunun."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 无法打开此通知。请打开“设置”→“远程主机”→ 你的主机 →“通知”，然后轻点“发送到此 iPhone”。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 無法開啟這則通知。請開啟「設定」→「遠端主機」→ 你的主機 →「通知」，然後點一下「傳送到這部 iPhone」。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

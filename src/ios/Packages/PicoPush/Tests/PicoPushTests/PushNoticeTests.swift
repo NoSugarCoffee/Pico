@@ -121,4 +121,43 @@ final class PushNoticeTests: XCTestCase {
             XCTAssertEqual($0 as? ProvisioningProfileError, .unreadable)
         }
     }
+
+    func testDisplayRewritesAnOpenedNoticeAndDropsTheEnvelope() throws {
+        let vector = try vector()
+        let keys = InMemoryPushKeyStore()
+        try keys.setKey(vector.key, host: "mac-mini", keyID: "0123456789abcdef")
+        let display = PushDisplayPolicy.display(
+            title: "New event", body: "Open Pico to read it.", userInfo: vector.userInfo, keys: keys,
+            failureBody: { "failed:\($0)" }, unopenableBody: "unopenable")
+        XCTAssertEqual(display.title, vector.notice.title)
+        XCTAssertEqual(display.body, vector.notice.body)
+        XCTAssertEqual(display.userInfo[PushUserInfo.urlKey] as? String, vector.notice.url)
+        XCTAssertNil(display.userInfo["pico"])
+        XCTAssertNotNil(display.userInfo["aps"])
+    }
+
+    func testDisplayKeepsTheEnvelopeWhenTheKeyIsMissing() throws {
+        let display = PushDisplayPolicy.display(
+            title: "New event", body: "Open Pico to read it.", userInfo: try vector().userInfo,
+            keys: InMemoryPushKeyStore(), failureBody: { "failed:\($0)" }, unopenableBody: "unopenable")
+        XCTAssertEqual(display.title, "New event")
+        XCTAssertEqual(display.body, "failed:mac-mini")
+        XCTAssertNotNil(display.userInfo["pico"], "a tap must be able to retry the keys")
+    }
+
+    func testDisplayLeavesSomebodyElsesNotificationAlone() {
+        let display = PushDisplayPolicy.display(
+            title: "New event", body: "Open Pico to read it.", userInfo: ["aps": ["alert": "hi"]],
+            keys: InMemoryPushKeyStore(), failureBody: { "failed:\($0)" }, unopenableBody: "unopenable")
+        XCTAssertEqual(display.title, "New event")
+        XCTAssertEqual(display.body, "Open Pico to read it.")
+    }
+
+    func testDisplayCallsABrokenEnvelopeUnopenable() {
+        let display = PushDisplayPolicy.display(
+            title: "New event", body: "Open Pico to read it.", userInfo: ["pico": "not an object"],
+            keys: InMemoryPushKeyStore(), failureBody: { "failed:\($0)" }, unopenableBody: "unopenable")
+        XCTAssertEqual(display.body, "unopenable")
+        XCTAssertEqual(display.userInfo["pico"] as? String, "not an object")
+    }
 }

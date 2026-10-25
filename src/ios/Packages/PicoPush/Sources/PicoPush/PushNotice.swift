@@ -81,18 +81,49 @@ public enum PushCrypto {
             throw PushOpenError.malformedNotice
         }
     }
-
-    /// The text shown when a notice cannot be opened, so a stale key is fixed rather than ignored.
-    public static func failureBody(host: String) -> String {
-        "Pico could not decrypt this notice. Open Settings → Remote Hosts → \(host) → Notifications and tap Send to This iPhone."
-    }
-
-    /// Shown when the failure has no host to name, such as a keychain the extension cannot reach.
-    public static let unopenableBody =
-        "Pico could not open this notice. Open Settings → Remote Hosts → your host → Notifications and tap Send to This iPhone."
 }
 
 /// Where the extension leaves the decrypted link for the app's tap handler.
 public enum PushUserInfo {
     public static let urlKey = "pico_url"
+}
+
+/// What iOS should show for a delivered notice, after the extension has had a chance to open it.
+public struct PushDisplay {
+    public let title: String
+    public let body: String
+    public let userInfo: [AnyHashable: Any]
+
+    public init(title: String, body: String, userInfo: [AnyHashable: Any]) {
+        self.title = title
+        self.body = body
+        self.userInfo = userInfo
+    }
+}
+
+public enum PushDisplayPolicy {
+    /// The extension's decision, kept out of `UserNotifications` so the four paths can be tested.
+    /// A notice that fails to open keeps its `pico` envelope, so a tap can try the keys again.
+    public static func display(
+        title: String,
+        body: String,
+        userInfo: [AnyHashable: Any],
+        keys: any PushKeyStore,
+        failureBody: (String) -> String,
+        unopenableBody: String
+    ) -> PushDisplay {
+        do {
+            let notice = try PushNoticeOpener.open(userInfo: userInfo, keys: keys)
+            var opened = userInfo
+            opened[PushUserInfo.urlKey] = notice.url
+            opened["pico"] = nil
+            return PushDisplay(title: notice.title, body: notice.body, userInfo: opened)
+        } catch PushOpenError.notAPicoNotice {
+            return PushDisplay(title: title, body: body, userInfo: userInfo)
+        } catch let PushOpenError.noKey(host), let PushOpenError.undecryptable(host) {
+            return PushDisplay(title: title, body: failureBody(host), userInfo: userInfo)
+        } catch {
+            return PushDisplay(title: title, body: unopenableBody, userInfo: userInfo)
+        }
+    }
 }
