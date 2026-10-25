@@ -16,10 +16,21 @@ struct HostNotificationsView: View {
     @State private var events: EventsState?
     @State private var isLoading = false
     @State private var copiedNotice: String?
+    @State private var pushRecord: PushRegistrationRecord?
+    @State private var pushState: PushRegistrationState = .idle
+    @State private var recordsProblem: String?
+
+    private enum PushRegistrationState: Equatable {
+        case idle
+        case registering
+        case registered
+        case failed(String)
+    }
 
     var body: some View {
         List {
             installSection
+            picoNotificationsSection
             statusSection
             eventsSection
         }
@@ -45,12 +56,70 @@ struct HostNotificationsView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(RemoteHostL10n.string("Run the command on \(hostName). It installs minis-hostd \(HostdRelease.version) to ~/.minis/bin after checking its SHA-256, and writes ~/.minis/hostd/config.toml. Then, on the host:"))
                 Text(RemoteHostL10n.string("1. Edit ~/.minis/hostd/config.toml: turn on a Gmail account or GitHub, and paste the Bark device key. In the Bark app, set Push Encryption to AES256 / GCM / noPadding with the encryption_key from the file."))
+                Text(RemoteHostL10n.string("Using Pico Notifications? Put the [apns] section in place of [bark] and point it at your APNs key."))
                 Text(RemoteHostL10n.string("2. Check everything and send a test push: ~/.minis/bin/minis-hostd doctor --push-test"))
                 Text(RemoteHostL10n.string("3. Start it as a service: ~/.minis/bin/minis-hostd install-service"))
                 if let copiedNotice {
                     Text(copiedNotice).foregroundStyle(.green)
                 }
             }
+        }
+    }
+
+    private var picoNotificationsSection: some View {
+        Section {
+            Button {
+                Task { await registerThisPhone() }
+            } label: {
+                HStack {
+                    Text(RemoteHostL10n.string("Send to This iPhone"))
+                    if pushState == .registering {
+                        Spacer()
+                        ProgressView()
+                    }
+                }
+            }
+            .disabled(pushState == .registering)
+            switch pushState {
+            case .registered:
+                Label(RemoteHostL10n.string("This iPhone is registered. Run ~/.minis/bin/minis-hostd doctor --push-test on \(hostName) to try it."), systemImage: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+            case .failed(let message):
+                Text(message)
+                    .font(.callout)
+                    .foregroundStyle(.red)
+                    .textSelection(.enabled)
+            case .idle, .registering:
+                if let problem = recordsProblem {
+                    Text(problem)
+                        .font(.callout)
+                        .foregroundStyle(.red)
+                        .textSelection(.enabled)
+                } else if let lastError = pushRecord?.lastError {
+                    Text(lastError)
+                        .font(.callout)
+                        .foregroundStyle(.red)
+                        .textSelection(.enabled)
+                } else if pushRecord != nil {
+                    Text(RemoteHostL10n.string("Notices from \(hostName) come to this iPhone."))
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } header: {
+            Text(RemoteHostL10n.string("Pico Notifications"))
+        } footer: {
+            Text(RemoteHostL10n.string("For a Pico built with your own paid Apple team. On \(hostName), turn on [apns] in ~/.minis/hostd/config.toml with your APNs key in place of [bark], then tap Send to This iPhone."))
+        }
+    }
+
+    private func registerThisPhone() async {
+        pushState = .registering
+        do {
+            try await PushRegistration.register(host: hostName, using: try .live(services: services))
+            pushRecord = PushRegistration.record(host: hostName)
+            pushState = .registered
+        } catch {
+            pushState = .failed(PushRegistration.message(for: error))
         }
     }
 
@@ -139,6 +208,9 @@ struct HostNotificationsView: View {
         guard !isLoading else { return }
         isLoading = true
         defer { isLoading = false }
+        // A launch refresh can write a new record or error while this screen is open, so read it every load.
+        pushRecord = PushRegistration.record(host: hostName)
+        recordsProblem = PushRegistration.recordsProblem()
         let client = HostEventClient(runner: services.executor)
         let statusResult: Result<HostdStatus, Error>
         do {

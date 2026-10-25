@@ -382,5 +382,8 @@
 		<string>A0000008580201</string>
 		<string>00000000000000</string>
 	</array>
+	<!-- fork(remote-host): the keychain group shared with PicoNotificationService (apns spec §5) -->
+	<key>PicoPushKeychainGroup</key>
+	<string>$(AppIdentifierPrefix)com.openminis.app.push</string>
 </dict>
 </plist>

@@ -3,7 +3,7 @@ import MinisRemote
 
 /// The minis-hostd release the install command pins. Bump it together with a `hostd-v<version>` release.
 enum HostdRelease {
-    static let version = "0.2.1"
+    static let version = "0.3.0"
     /// Read from `main` so a fix to the script reaches users without an app update; the binary it installs
     /// is still pinned by `version` and checked against the release's SHA256SUMS.
     static let installScriptURL =

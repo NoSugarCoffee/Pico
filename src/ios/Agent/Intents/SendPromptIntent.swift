@@ -501,6 +501,10 @@ final class ShortcutNotificationDelegate: NSObject, UNUserNotificationCenterDele
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
         let userInfo = response.notification.request.content.userInfo
+        // fork(remote-host): a Pico notification from minis-hostd, decrypted by PicoNotificationService.
+        if let url = PushTap.link(userInfo: userInfo) {
+            DispatchQueue.main.async { HostEventOpener.open(url) }
+        }
         if let sessionId = userInfo["sessionId"] as? String, !sessionId.isEmpty {
             DispatchQueue.main.async {
                 // Buffer first (cold-launch consumer), then post (warm-path

@@ -84,7 +84,7 @@ func TestAPNsRegisterRejectsBadInput(t *testing.T) {
 		{"apns", "register", deviceToken, "--topic", "com.example.pico", "--json"},
 		{"apns", "register", "XYZ", "--topic", "com.example.pico", "--environment", "development", "--json"},
 		{"apns", "register", deviceToken, "--topic", "com.example.pico", "--environment", "staging", "--json"},
-		{"apns", "unregister", "--json"},
+		{"apns", "replace", "--json"},
 		{"apns", "activate", "--json"},
 	}
 	for _, args := range cases {
@@ -92,6 +92,34 @@ func TestAPNsRegisterRejectsBadInput(t *testing.T) {
 		if status != ExitError || !strings.Contains(stdout, `"code":"bad_request"`) {
 			t.Errorf("%v: status %d stdout %s", args, status, stdout)
 		}
+	}
+}
+
+func TestAPNsUnregisterStopsTheNotices(t *testing.T) {
+	dir := t.TempDir()
+	out := register(t, dir)
+	if status, _, stderr := runIn(dir, "apns", "activate", out.KeyID, "--json"); status != ExitOK {
+		t.Fatal(stderr)
+	}
+	status, stdout, stderr := runIn(dir, "apns", "unregister", "--json")
+	if status != ExitOK {
+		t.Fatalf("status %d stderr %s", status, stderr)
+	}
+	if !strings.Contains(stdout, `"ok":true`) {
+		t.Errorf("stdout %s", stdout)
+	}
+	path := filepath.Join(dir, notify.RegistrationFile)
+	if _, err := notify.ActiveDevice(path); !errors.Is(err, notify.ErrNotRegistered) {
+		t.Fatalf("still registered: %v", err)
+	}
+	if status, _, stderr := runIn(dir, "apns", "unregister", "--json"); status != ExitOK {
+		t.Fatalf("second unregister: status %d stderr %s", status, stderr)
+	}
+}
+
+func TestAPNsUnregisterRejectsExtraArguments(t *testing.T) {
+	if status, _, _ := runIn(t.TempDir(), "apns", "unregister", "extra", "--json"); status != ExitError {
+		t.Fatalf("status %d", status)
 	}
 }
 
@@ -107,5 +135,35 @@ func TestAPNsRegisterReplacesAnUnreadableFile(t *testing.T) {
 	}
 	if active, err := notify.ActiveDevice(path); err != nil || active.KeyID != out.KeyID {
 		t.Errorf("active %+v err %v", active, err)
+	}
+}
+
+// The app decodes this file in HostEventContractTests, so both sides read the same reply shape.
+func TestAPNsRegisterContractVector(t *testing.T) {
+	const vectorPath = "../../testdata/contract/apns_register.json"
+	if *update {
+		out := register(t, t.TempDir())
+		data, err := json.MarshalIndent(out, "", "  ")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(vectorPath, append(data, '\n'), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	data, err := os.ReadFile(vectorPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var out apnsRegisterOutput
+	if err := json.Unmarshal(data, &out); err != nil {
+		t.Fatal(err)
+	}
+	if out.SchemaVersion != SchemaVersion || out.KeyID == "" {
+		t.Fatalf("vector %s", data)
+	}
+	key, err := base64.StdEncoding.DecodeString(out.Key)
+	if err != nil || len(key) != notify.PushKeyLength {
+		t.Fatalf("key %q: %v", out.Key, err)
 	}
 }

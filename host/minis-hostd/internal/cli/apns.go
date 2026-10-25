@@ -2,8 +2,11 @@ package cli
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
+	"io/fs"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"github.com/NoSugarCoffee/Pico/host/minis-hostd/internal/config"
@@ -11,8 +14,9 @@ import (
 )
 
 const (
-	usageAPNsRegister = "minis-hostd apns register <device token> --topic <bundle id> --environment development|production --json"
-	usageAPNsActivate = "minis-hostd apns activate <key id> --json"
+	usageAPNsRegister   = "minis-hostd apns register <device token> --topic <bundle id> --environment development|production --json"
+	usageAPNsActivate   = "minis-hostd apns activate <key id> --json"
+	usageAPNsUnregister = "minis-hostd apns unregister --json"
 )
 
 type apnsRegisterOutput struct {
@@ -23,13 +27,16 @@ type apnsRegisterOutput struct {
 
 func runAPNs(env Env, args []string) int {
 	if len(args) == 0 {
-		return fail(env, CodeBadRequest, "usage: "+usageAPNsRegister+"\n       "+usageAPNsActivate)
+		return fail(env, CodeBadRequest,
+			"usage: "+usageAPNsRegister+"\n       "+usageAPNsActivate+"\n       "+usageAPNsUnregister)
 	}
 	switch args[0] {
 	case "register":
 		return apnsRegister(env, args[1:])
 	case "activate":
 		return apnsActivate(env, args[1:])
+	case "unregister":
+		return apnsUnregister(env, args[1:])
 	default:
 		return fail(env, CodeBadRequest, fmt.Sprintf("unknown command \"apns %s\"", args[0]))
 	}
@@ -97,6 +104,30 @@ func apnsActivate(env Env, args []string) int {
 	}
 	if err != nil {
 		return fail(env, CodeStoreUnavailable, fmt.Sprintf("cannot activate the registration: %v", err))
+	}
+	return emit(env, ackOutput{SchemaVersion: SchemaVersion, OK: true})
+}
+
+// apnsUnregister forgets the phone, for instance when the app removes the host: notices stop instead of
+// arriving sealed with a key the phone no longer has.
+func apnsUnregister(env Env, args []string) int {
+	parsed, err := parseArgs(args, nil, usageAPNsUnregister)
+	if err != nil {
+		return failWith(env, err)
+	}
+	if len(parsed.Positional) != 0 {
+		return fail(env, CodeBadRequest, "usage: "+usageAPNsUnregister)
+	}
+	path := registrationPath(env)
+	err = notify.WithRegistrationLock(path, func() error {
+		err := os.Remove(path)
+		if errors.Is(err, fs.ErrNotExist) {
+			return nil
+		}
+		return err
+	})
+	if err != nil {
+		return fail(env, CodeStoreUnavailable, fmt.Sprintf("cannot remove the registration: %v", err))
 	}
 	return emit(env, ackOutput{SchemaVersion: SchemaVersion, OK: true})
 }

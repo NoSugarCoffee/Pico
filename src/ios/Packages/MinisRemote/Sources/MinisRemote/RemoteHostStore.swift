@@ -150,7 +150,7 @@ public final class RemoteHostStore: ObservableObject {
             hosts: hosts.map { $0.name == host.name ? host : $0 }, bindings: bindings, recentWorkdirs: recentWorkdirs)
     }
 
-    private static func validateConnection(address: String, port: Int, user: String) throws {
+    public static func validateConnection(address: String, port: Int, user: String) throws {
         guard !address.trimmingCharacters(in: .whitespaces).isEmpty else {
             throw RemoteHostStoreError.missingField("address")
         }

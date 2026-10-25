@@ -80,6 +80,9 @@ nothing; registering again replaces the pending one. A run that stops after step
 sides on the new key. The app keeps the keys of earlier registrations, so notices APNs still holds
 from before (up to 24 hours) decrypt by their key id.
 
+- `minis-hostd apns unregister --json` deletes the registration; Pico calls it when a host is
+  removed, so notices stop instead of arriving sealed with a key the phone just deleted. An older
+  minis-hostd answers "unknown command", which the app logs and ignores.
 - State lives in `~/.minis/hostd/apns-device.json` (mode 0600, replaced atomically).
 - One phone per host; activating a new registration replaces the old phone.
 - The daemon reads the file for every send, so registering needs no restart. Before the first
@@ -100,13 +103,14 @@ from before (up to 24 hours) decrypt by their key id.
   id, timing and the fixed placeholder text. Not the sender, subject, repository or link.
 - **Notification Service Extension** (`PicoNotificationService`): reads the host's key from a
   keychain group shared with the app (`<team prefix>.com.openminis.app.push`) by host and key id, decrypts, and replaces
-  title and body; it puts the link in `userInfo["url"]`. When decryption fails it shows "Pico could
-  not decrypt this notice. Open Settings → Remote Hosts → <host> → Notifications and tap Send to
-  This iPhone." and drops the link.
+  title and body; it puts the link in `userInfo["pico_url"]` and then removes the `pico` envelope.
+  When decryption fails it shows "Pico could not decrypt this notice. Open Settings → Remote Hosts →
+  <host> → Notifications and tap Send to This iPhone." and leaves the envelope in place, with no
+  `pico_url`, so the tap can try the same keys again.
   The keys are stored After First Unlock (`kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly`), since
   the extension runs while the phone is locked.
-- **Tap:** the notification delegate passes `userInfo["url"]` to the same `host-event` opener as the
-  `pico://` link (§9.1). Whenever the delivered notice has no `url` but still has the `pico`
+- **Tap:** the notification delegate passes `userInfo["pico_url"]` to the same `host-event` opener as the
+  `pico://` link (§9.1). Whenever the delivered notice has no `pico_url` but still has the `pico`
   envelope (the extension crashed, or its time ran out before it decrypted), the delegate opens the
   envelope itself with the same keys.
 
@@ -115,7 +119,7 @@ from before (up to 24 hours) decrypt by their key id.
 | Part | Location |
 |---|---|
 | APNs notifier, JWT, payload | `host/minis-hostd/internal/notify/apns.go` |
-| Registration file and `apns register` | `internal/notify/registration.go`, `internal/cli/apns.go` |
+| Registration file, `apns register`, `apns unregister` | `internal/notify/registration.go`, `internal/cli/apns.go` |
 | Config `[apns]` | `internal/config` |
 | Envelope, cipher, provisioning parser (tested with `swift test`) | `src/ios/Packages/PicoPush` |
 | Extension target | `src/ios/PicoNotificationService/` |

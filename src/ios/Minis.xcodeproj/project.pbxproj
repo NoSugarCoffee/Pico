@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA7E000000000000000000A0 /* PicoPush in Frameworks */ = {isa = PBXBuildFile; productRef = FA7E000000000000000000A1 /* PicoPush */; };
+		FA7E000000000000000000A3 /* PicoPush in Frameworks */ = {isa = PBXBuildFile; productRef = FA7E000000000000000000A4 /* PicoPush */; };
+		FA7E000000000000000000A6 /* PicoNotificationService.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FA7E000000000000000000A5 /* PicoNotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		21FED4B7BB6F6D9476C9992E /* VoiceProvider+System.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88993FC8E3F0199C6638F664 /* VoiceProvider+System.swift */; };
 		241D530017827D7F0EB604DE /* VoiceProviderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2941B643B8A2F048A2B154E /* VoiceProviderFactory.swift */; };
 		2A4FD49F872431D703328384 /* VoiceOutputPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 424510790AF3FB2452D3CCE3 /* VoiceOutputPlayer.swift */; };
@@ -592,6 +595,13 @@
 			remoteGlobalIDString = E5H000040;
 			remoteInfo = AgentWidgetExtension;
 		};
+		FA7E000000000000000000A7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E51000060 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA7E000000000000000000AA;
+			remoteInfo = PicoNotificationService;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -631,6 +641,7 @@
 				E5E000009 /* MinisShare.appex in Embed Foundation Extensions */,
 				E5H000009 /* AgentWidgetExtension.appex in Embed Foundation Extensions */,
 				E5FP00009 /* MinisFileProvider.appex in Embed Foundation Extensions */,
+				FA7E000000000000000000A6 /* PicoNotificationService.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -638,6 +649,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FA7E000000000000000000A5 /* PicoNotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PicoNotificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		0ED149397BEA7E0408C92688 /* GroupVoiceModelsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GroupVoiceModelsView.swift; sourceTree = "<group>"; };
 		0F5379380323FA8C6477708C /* GroupSlotPicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GroupSlotPicker.swift; sourceTree = "<group>"; };
 		16FF3462D09402F14B610CD6 /* VoiceWaveformView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VoiceWaveformView.swift; sourceTree = "<group>"; };
@@ -1423,6 +1435,14 @@
 			);
 			target = BB1000070F700000000000AA /* MinisTests */;
 		};
+		FA7E000000000000000000AE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				PicoNotificationService.entitlements,
+			);
+			target = FA7E000000000000000000AA /* PicoNotificationService */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -1431,6 +1451,7 @@
 		FA7E00000000000000000004 /* Remote */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Remote; sourceTree = "<group>"; };
 		AA8A568C2F6FBB7A00A3E54E /* MinisUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = MinisUITests; sourceTree = "<group>"; };
 		BB1000012F700000000000AA /* MinisTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (E5EXC0001 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MinisTests; sourceTree = "<group>"; };
+		FA7E000000000000000000A9 /* PicoNotificationService */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (FA7E000000000000000000AE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = PicoNotificationService; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1470,6 +1491,15 @@
 				E5S000005 /* CloudKit.framework in Frameworks */,
 				891443CAA4679D09A6D32AE4 /* RealTimeCutVADLibrary in Frameworks */,
 				FA7E00000000000000000001 /* MinisRemote in Frameworks */,
+				FA7E000000000000000000A0 /* PicoPush in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA7E000000000000000000AC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA7E000000000000000000A3 /* PicoPush in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1643,6 +1673,7 @@
 				E5E000030 /* ShareExtension */,
 				E5H000030 /* AgentWidget */,
 				E5FP00030 /* FileProvider */,
+				FA7E000000000000000000A9 /* PicoNotificationService */,
 				AA8A568C2F6FBB7A00A3E54E /* MinisUITests */,
 				BB1000012F700000000000AA /* MinisTests */,
 				AA26BD0E2F2E5FA500AECF2D /* Frameworks */,
@@ -1691,6 +1722,7 @@
 				E5E000010 /* MinisShare.appex */,
 				E5H000010 /* AgentWidgetExtension.appex */,
 				E5FP00010 /* MinisFileProvider.appex */,
+				FA7E000000000000000000A5 /* PicoNotificationService.appex */,
 				AA8A568B2F6FBB7A00A3E54E /* MinisUITests.xctest */,
 				BB1000010F700000000000AA /* MinisTests.xctest */,
 			);
@@ -2630,6 +2662,7 @@
 				E5E000080 /* PBXTargetDependency */,
 				E5H000080 /* PBXTargetDependency */,
 				E5FP00080 /* PBXTargetDependency */,
+				FA7E000000000000000000A8 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				AA0838CB2F3CA8A900049557 /* Terminal */,
@@ -2644,6 +2677,7 @@
 				E5X000021 /* SwiftMath */,
 				C42120806C66A2C804F89620 /* RealTimeCutVADLibrary */,
 				FA7E00000000000000000002 /* MinisRemote */,
+				FA7E000000000000000000A1 /* PicoPush */,
 			);
 			productName = Minis;
 			productReference = E51000010 /* Minis.app */;
@@ -2697,6 +2731,29 @@
 			productReference = E5H000010 /* AgentWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		FA7E000000000000000000AA /* PicoNotificationService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA7E000000000000000000AD /* Build configuration list for PBXNativeTarget "PicoNotificationService" */;
+			buildPhases = (
+				FA7E000000000000000000AB /* Sources */,
+				FA7E000000000000000000AC /* Frameworks */,
+				FA7E000000000000000000C0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				FA7E000000000000000000A9 /* PicoNotificationService */,
+			);
+			name = PicoNotificationService;
+			packageProductDependencies = (
+				FA7E000000000000000000A4 /* PicoPush */,
+			);
+			productName = PicoNotificationService;
+			productReference = FA7E000000000000000000A5 /* PicoNotificationService.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -2722,6 +2779,9 @@
 					};
 					E5H000040 = {
 						CreatedOnToolsVersion = 15.0;
+					};
+					FA7E000000000000000000AA = {
+						CreatedOnToolsVersion = 26.0;
 					};
 				};
 			};
@@ -2757,6 +2817,7 @@
 				E5X000020 /* XCRemoteSwiftPackageReference "SwiftMath" */,
 				B318C2F47DB3F301A17E49BE /* XCRemoteSwiftPackageReference "RealTimeCutVADLibrary" */,
 				FA7E00000000000000000005 /* XCLocalSwiftPackageReference "Packages/MinisRemote" */,
+				FA7E000000000000000000A2 /* XCLocalSwiftPackageReference "Packages/PicoPush" */,
 			);
 			productRefGroup = E51000032 /* Products */;
 			projectDirPath = "";
@@ -2767,12 +2828,20 @@
 				E5H000040 /* AgentWidgetExtension */,
 				E5FP00040 /* MinisFileProvider */,
 				AA8A568A2F6FBB7A00A3E54E /* MinisUITests */,
+				FA7E000000000000000000AA /* PicoNotificationService */,
 				BB1000070F700000000000AA /* MinisTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		FA7E000000000000000000C0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA8A56892F6FBB7A00A3E54E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3429,6 +3498,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA7E000000000000000000AB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -3456,6 +3532,11 @@
 			isa = PBXTargetDependency;
 			target = E5H000040 /* AgentWidgetExtension */;
 			targetProxy = E5H000081 /* PBXContainerItemProxy */;
+		};
+		FA7E000000000000000000A8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA7E000000000000000000AA /* PicoNotificationService */;
+			targetProxy = FA7E000000000000000000A7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -4006,6 +4087,58 @@
 			};
 			name = Release;
 		};
+		FA7E000000000000000000B0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PicoNotificationService/PicoNotificationService.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PicoNotificationService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Pico Notifications";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.14;
+				PRODUCT_BUNDLE_IDENTIFIER = com.openminis.app.PicoNotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FA7E000000000000000000B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PicoNotificationService/PicoNotificationService.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PicoNotificationService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Pico Notifications";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.14;
+				PRODUCT_BUNDLE_IDENTIFIER = com.openminis.app.PicoNotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -4072,12 +4205,25 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		FA7E000000000000000000AD /* Build configuration list for PBXNativeTarget "PicoNotificationService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA7E000000000000000000B0 /* Debug */,
+				FA7E000000000000000000B1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
 		FA7E00000000000000000005 /* XCLocalSwiftPackageReference "Packages/MinisRemote" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/MinisRemote;
+		};
+		FA7E000000000000000000A2 /* XCLocalSwiftPackageReference "Packages/PicoPush" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/PicoPush;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -4117,6 +4263,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		FA7E000000000000000000A1 /* PicoPush */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA7E000000000000000000A2 /* XCLocalSwiftPackageReference "Packages/PicoPush" */;
+			productName = PicoPush;
+		};
+		FA7E000000000000000000A4 /* PicoPush */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA7E000000000000000000A2 /* XCLocalSwiftPackageReference "Packages/PicoPush" */;
+			productName = PicoPush;
+		};
 		FA7E00000000000000000002 /* MinisRemote */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = FA7E00000000000000000005 /* XCLocalSwiftPackageReference "Packages/MinisRemote" */;

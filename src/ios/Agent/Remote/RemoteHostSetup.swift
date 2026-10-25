@@ -95,7 +95,18 @@ enum RemoteHostSetup {
     static func updateHost(
         name: String, address: String, port: Int, user: String, services: RemoteServices
     ) async throws {
+        // A new address, port or account is likely another hostd, which has no APNs registration of its own.
+        let endpointChanged = services.store.hosts.first { $0.name == name }
+            .map { $0.address != address || $0.port != port || $0.user != user } ?? false
+        if endpointChanged {
+            // An edit the store would reject must not already have stopped the old host's notices.
+            try RemoteHostStore.validateConnection(address: address, port: port, user: user)
+            await PushRegistration.unregister(host: name, services: services)
+        }
         try services.store.update(name: name, address: address, port: port, user: user)
+        if endpointChanged {
+            PushRegistration.forgetForReplacedHost(host: name)
+        }
         await services.pool.invalidate(host: name)
         await services.executor.forgetHome(host: name)
     }
@@ -108,7 +119,9 @@ enum RemoteHostSetup {
     }
 
     static func removeHost(name: String, services: RemoteServices) async throws {
+        await PushRegistration.unregister(host: name, services: services)
         try services.store.remove(name: name)
+        PushRegistration.forget(host: name)
         await services.pool.invalidate(host: name)
         await services.executor.forgetHome(host: name)
         logger.info("Removed remote host \(name)")
