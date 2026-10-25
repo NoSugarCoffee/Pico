@@ -204,6 +204,8 @@ enum PushRegistration {
         // Re-read: a host may have been removed, or another run may have registered it, while iOS answered.
         let records = deps.records()
         for (host, record) in records.sorted(by: { $0.key < $1.key }) where record.token != token {
+            // An earlier host in this loop suspends, so this one may have been removed in the meantime.
+            guard deps.records()[host] != nil else { continue }
             do {
                 try await register(host: host, using: deps)
             } catch {

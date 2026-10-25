@@ -95,9 +95,9 @@ enum RemoteHostSetup {
     static func updateHost(
         name: String, address: String, port: Int, user: String, services: RemoteServices
     ) async throws {
-        // A new address is likely another machine, which has no APNs registration of its own.
+        // A new address, port or account is likely another hostd, which has no APNs registration of its own.
         let endpointChanged = services.store.hosts.first { $0.name == name }
-            .map { $0.address != address || $0.port != port } ?? false
+            .map { $0.address != address || $0.port != port || $0.user != user } ?? false
         if endpointChanged {
             // An edit the store would reject must not already have stopped the old host's notices.
             try RemoteHostStore.validateConnection(address: address, port: port, user: user)
