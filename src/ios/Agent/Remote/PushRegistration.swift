@@ -146,25 +146,32 @@ enum PushRegistration {
         guard try await deps.authorize() else { throw PushRegistrationError.notificationsDenied }
         let token = tokenHex(try await deps.deviceToken())
         let reply = try await deps.register(host, token, deps.topic, deps.environment.rawValue)
+        // The host may have been removed while hostd was answering; nothing of this run may persist then.
+        guard generation == generations[host, default: 0] else {
+            throw CancellationError()
+        }
         guard let key = Data(base64Encoded: reply.key), key.count == PushCrypto.keyLength else {
             throw PushRegistrationError.undecodableKey(host: host)
         }
         try deps.saveKey(key, host, reply.keyID)
         // The key id is kept before activation: if activation fails, removing the host still finds the key.
+        // The token stays that of the last activated key, so a failed first activation is retried on launch.
         var records = deps.records()
         let previous = records[host]
         records[host] = PushRegistrationRecord(
-            token: previous?.token ?? token, keyID: previous?.keyID ?? reply.keyID, lastError: nil,
+            token: previous?.token ?? "", keyID: previous?.keyID ?? reply.keyID, lastError: nil,
             keyIDs: (previous?.keyIDs ?? []) + [reply.keyID])
         deps.saveRecords(records)
-        guard generation == generations[host, default: 0] else { throw CancellationError() }
         do {
             try await deps.activate(host, reply.keyID)
         } catch {
             recordFailure(host: host, generation: generation, error: error, using: deps)
             throw error
         }
-        guard generation == generations[host, default: 0] else { throw CancellationError() }
+        guard generation == generations[host, default: 0] else {
+            discard(host: host, keyID: reply.keyID)
+            throw CancellationError()
+        }
         records = deps.records()
         records[host]?.token = token
         records[host]?.keyID = reply.keyID
@@ -249,6 +256,18 @@ enum PushRegistration {
         logger.info("[PicoPush] forgot \(host)")
     }
 
+    /// A registration that resumed after its host was removed: drop the key it saved and its record.
+    private static func discard(host: String, keyID: String) {
+        do {
+            try KeychainPushKeyStore(bundle: .main).deleteKey(host: host, keyID: keyID)
+        } catch {
+            logger.error("[PicoPush] could not delete the key of \(host) after its removal: \(error)")
+        }
+        var records = Dependencies.liveRecords()
+        records.removeValue(forKey: host)
+        Dependencies.saveLiveRecords(records)
+    }
+
     /// A removal bumps the generation, so a registration still awaiting hostd cannot persist afterwards.
     static func invalidate(host: String) {
         generations[host, default: 0] += 1
@@ -266,6 +285,7 @@ enum PushRegistration {
     /// Stops notices for a host the user is removing, before its SSH settings are gone. Best effort: an old
     /// minis-hostd has no `apns unregister`, and the local key is deleted either way.
     static func unregister(host: String, services: RemoteServices) async {
+        guard Dependencies.liveRecords()[host] != nil else { return }
         invalidate(host: host)
         do {
             _ = try await HostEventClient(runner: services.executor).unregisterAPNs(host: host)

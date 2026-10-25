@@ -194,6 +194,37 @@ final class PushRegistrationTests: XCTestCase {
         XCTAssertNotNil(recorder.records["mac-mini"]?.lastError)
     }
 
+    func testARemovalWhileHostdAnswersSavesNothing() async {
+        let recorder = Recorder()
+        var dependencies = deps(recorder)
+        dependencies.register = { host, token, topic, environment in
+            recorder.steps.append("register \(host) \(token) \(topic) \(environment)")
+            // The host is removed while this call is on the wire.
+            PushRegistration.invalidate(host: host)
+            return HostdAPNsRegistration(keyID: "k-mac-mini", key: Data(repeating: 1, count: 32).base64EncodedString())
+        }
+        do {
+            try await PushRegistration.register(host: "mac-mini", using: dependencies)
+            XCTFail("a removed host was registered")
+        } catch {
+            XCTAssertTrue(error is CancellationError, "\(error)")
+        }
+        XCTAssertNil(recorder.records["mac-mini"])
+        XCTAssertEqual(recorder.steps, ["register mac-mini 0f1e com.example.pico development"])
+    }
+
+    func testAFirstActivationFailureIsRetriedOnLaunch() async {
+        let recorder = Recorder()
+        recorder.failActivate = true
+        _ = try? await PushRegistration.register(host: "mac-mini", using: deps(recorder))
+        XCTAssertEqual(recorder.records["mac-mini"]?.token, "", "no activated token yet")
+        recorder.failActivate = false
+        recorder.steps = []
+        await PushRegistration.refreshChangedTokens(using: deps(recorder))
+        XCTAssertTrue(recorder.steps.contains("activate mac-mini k-mac-mini"), "\(recorder.steps)")
+        XCTAssertEqual(recorder.records["mac-mini"]?.token, "0f1e")
+    }
+
     func testARemovalStopsAnInFlightRegistrationFromSaving() async throws {
         let recorder = Recorder()
         var dependencies = deps(recorder)

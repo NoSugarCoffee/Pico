@@ -27,7 +27,8 @@ type apnsRegisterOutput struct {
 
 func runAPNs(env Env, args []string) int {
 	if len(args) == 0 {
-		return fail(env, CodeBadRequest, "usage: "+usageAPNsRegister+"\n       "+usageAPNsActivate)
+		return fail(env, CodeBadRequest,
+			"usage: "+usageAPNsRegister+"\n       "+usageAPNsActivate+"\n       "+usageAPNsUnregister)
 	}
 	switch args[0] {
 	case "register":
