@@ -14,6 +14,7 @@ final class PushRegistrationTests: XCTestCase {
         var records: [String: PushRegistrationRecord] = [:]
         var token = Data([0x0f, 0x1e])
         var failSave = false
+        var failActivate = false
         var authorized = true
     }
 
@@ -31,7 +32,10 @@ final class PushRegistrationTests: XCTestCase {
                 recorder.steps.append("save \(host) \(keyID) \(key.count)")
                 if recorder.failSave { throw SaveFailed() }
             },
-            activate: { host, keyID in recorder.steps.append("activate \(host) \(keyID)") },
+            activate: { host, keyID in
+                recorder.steps.append("activate \(host) \(keyID)")
+                if recorder.failActivate { throw SaveFailed() }
+            },
             records: { recorder.records },
             saveRecords: { recorder.records = $0 })
     }
@@ -44,7 +48,7 @@ final class PushRegistrationTests: XCTestCase {
             "save mac-mini k-mac-mini 32",
             "activate mac-mini k-mac-mini",
         ])
-        XCTAssertEqual(recorder.records["mac-mini"], PushRegistrationRecord(token: "0f1e", keyID: "k-mac-mini", lastError: nil))
+        XCTAssertEqual(recorder.records["mac-mini"], PushRegistrationRecord(token: "0f1e", keyID: "k-mac-mini", lastError: nil, keyIDs: ["k-mac-mini"]))
     }
 
     func testAKeyThatWasNotSavedIsNeverActivated() async {
@@ -104,8 +108,8 @@ final class PushRegistrationTests: XCTestCase {
             }
         }
         try defaults.set(JSONEncoder().encode([
-            "mac-mini": PushRegistrationRecord(token: "0f1e", keyID: "k1", lastError: nil),
-            "other": PushRegistrationRecord(token: "0f1e", keyID: "k2", lastError: nil),
+            "mac-mini": PushRegistrationRecord(token: "0f1e", keyID: "k1", lastError: nil, keyIDs: ["k1"]),
+            "other": PushRegistrationRecord(token: "0f1e", keyID: "k2", lastError: nil, keyIDs: ["k2"]),
         ]), forKey: PushRegistration.recordsKey)
         PushRegistration.forget(host: "mac-mini")
         XCTAssertNil(PushRegistration.record(host: "mac-mini"))
@@ -136,7 +140,7 @@ final class PushRegistrationTests: XCTestCase {
         XCTAssertNotNil(PushRegistration.recordsProblem())
 
         // Rebuilding one host writes a blob that decodes: the warning goes, the copy stays for recovery.
-        let rebuilt = ["mac-mini": PushRegistrationRecord(token: "0f1e", keyID: "k1", lastError: nil)]
+        let rebuilt = ["mac-mini": PushRegistrationRecord(token: "0f1e", keyID: "k1", lastError: nil, keyIDs: ["k1"])]
         defaults.set(try JSONEncoder().encode(rebuilt), forKey: PushRegistration.recordsKey)
         XCTAssertNil(PushRegistration.recordsProblem())
         XCTAssertEqual(defaults.data(forKey: try XCTUnwrap(backups.first)), Data("not a records blob".utf8))
@@ -157,8 +161,8 @@ final class PushRegistrationTests: XCTestCase {
     func testLaunchReRegistersOnlyHostsWithAnOldToken() async {
         let recorder = Recorder()
         recorder.records = [
-            "current": PushRegistrationRecord(token: "0f1e", keyID: "k1", lastError: nil),
-            "stale": PushRegistrationRecord(token: "aaaa", keyID: "k2", lastError: nil),
+            "current": PushRegistrationRecord(token: "0f1e", keyID: "k1", lastError: nil, keyIDs: ["k1"]),
+            "stale": PushRegistrationRecord(token: "aaaa", keyID: "k2", lastError: nil, keyIDs: ["k2"]),
         ]
         await PushRegistration.refreshChangedTokens(using: deps(recorder))
         XCTAssertEqual(recorder.steps.first, "register stale 0f1e com.example.pico development")
@@ -168,12 +172,51 @@ final class PushRegistrationTests: XCTestCase {
 
     func testAFailedLaunchRefreshKeepsTheOldRecordAndShowsTheError() async {
         let recorder = Recorder()
-        recorder.failSave = true
-        recorder.records = ["stale": PushRegistrationRecord(token: "aaaa", keyID: "k2", lastError: nil)]
+        recorder.failActivate = true
+        recorder.records = ["stale": PushRegistrationRecord(token: "aaaa", keyID: "k2", lastError: nil, keyIDs: ["k2"])]
         await PushRegistration.refreshChangedTokens(using: deps(recorder))
         XCTAssertEqual(recorder.records["stale"]?.token, "aaaa")
         XCTAssertEqual(recorder.records["stale"]?.keyID, "k2")
         XCTAssertNotNil(recorder.records["stale"]?.lastError)
+        XCTAssertTrue(recorder.records["stale"]?.keyIDs.contains("k-stale") == true, "the saved key is remembered for removal")
+    }
+
+    func testAnUnactivatedKeyIsRememberedForRemoval() async {
+        let recorder = Recorder()
+        recorder.failActivate = true
+        do {
+            try await PushRegistration.register(host: "mac-mini", using: deps(recorder))
+            XCTFail("registered without activating")
+        } catch {
+            XCTAssertTrue(error is SaveFailed, "\(error)")
+        }
+        XCTAssertEqual(recorder.records["mac-mini"]?.keyIDs, ["k-mac-mini"])
+        XCTAssertNotNil(recorder.records["mac-mini"]?.lastError)
+    }
+
+    func testARemovalStopsAnInFlightRegistrationFromSaving() async throws {
+        let recorder = Recorder()
+        var dependencies = deps(recorder)
+        dependencies.activate = { host, keyID in
+            recorder.steps.append("activate \(host) \(keyID)")
+            // The host is removed while this call is on the wire.
+            PushRegistration.invalidate(host: host)
+        }
+        do {
+            try await PushRegistration.register(host: "mac-mini", using: dependencies)
+            XCTFail("a removed host was registered")
+        } catch {
+            XCTAssertTrue(error is CancellationError, "\(error)")
+        }
+        XCTAssertEqual(recorder.records["mac-mini"]?.keyID, "k-mac-mini", "only the pre-activation record, never activated")
+        XCTAssertNil(recorder.records["mac-mini"]?.lastError)
+    }
+
+    func testARecordWithoutKeyIDsDecodesFromItsKeyID() throws {
+        let data = Data(#"{"token":"0f1e","keyId":"k1"}"#.utf8)
+        let record = try JSONDecoder().decode(PushRegistrationRecord.self, from: data)
+        XCTAssertEqual(record.keyIDs, ["k1"])
+        XCTAssertNil(record.lastError)
     }
 
     func testAnOldHostdIsAskedToUpdate() {

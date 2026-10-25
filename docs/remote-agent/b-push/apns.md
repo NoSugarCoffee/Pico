@@ -80,6 +80,9 @@ nothing; registering again replaces the pending one. A run that stops after step
 sides on the new key. The app keeps the keys of earlier registrations, so notices APNs still holds
 from before (up to 24 hours) decrypt by their key id.
 
+- `minis-hostd apns unregister --json` deletes the registration; Pico calls it when a host is
+  removed, so notices stop instead of arriving sealed with a key the phone just deleted. An older
+  minis-hostd answers "unknown command", which the app logs and ignores.
 - State lives in `~/.minis/hostd/apns-device.json` (mode 0600, replaced atomically).
 - One phone per host; activating a new registration replaces the old phone.
 - The daemon reads the file for every send, so registering needs no restart. Before the first
@@ -116,7 +119,7 @@ from before (up to 24 hours) decrypt by their key id.
 | Part | Location |
 |---|---|
 | APNs notifier, JWT, payload | `host/minis-hostd/internal/notify/apns.go` |
-| Registration file and `apns register` | `internal/notify/registration.go`, `internal/cli/apns.go` |
+| Registration file, `apns register`, `apns unregister` | `internal/notify/registration.go`, `internal/cli/apns.go` |
 | Config `[apns]` | `internal/config` |
 | Envelope, cipher, provisioning parser (tested with `swift test`) | `src/ios/Packages/PicoPush` |
 | Extension target | `src/ios/PicoNotificationService/` |

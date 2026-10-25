@@ -186,4 +186,9 @@ extension HostEventClient {
     public func activateAPNs(host: String, keyID: String) async throws -> HostEventAck {
         try await call(host: host, arguments: ["apns", "activate", keyID])
     }
+
+    /// Stops notices for a host the app is removing; hostd deletes its registration file.
+    public func unregisterAPNs(host: String) async throws -> HostEventAck {
+        try await call(host: host, arguments: ["apns", "unregister"])
+    }
 }

@@ -64,6 +64,14 @@ final class HostEventClientTests: XCTestCase {
         XCTAssertEqual(scripts, [#""$HOME/.minis/bin/minis-hostd" 'events' 'ack' '01A' '01B' --json"#])
     }
 
+    func testUnregisterAPNsAsksHostdToForgetThePhone() async throws {
+        let runner = RecordingRunner(stdout: #"{"schemaVersion":1,"ok":true}"# + "\n", exitStatus: 0)
+        let reply = try await HostEventClient(runner: runner).unregisterAPNs(host: "mac-mini")
+        XCTAssertTrue(reply.ok)
+        let scripts = await runner.scripts
+        XCTAssertEqual(scripts, [#""$HOME/.minis/bin/minis-hostd" 'apns' 'unregister' --json"#])
+    }
+
     func testRegisterAPNsQuotesItsArgumentsAndReturnsTheKey() async throws {
         let runner = RecordingRunner(stdout: #"{"schemaVersion":1,"keyId":"0a1b","key":"AAEC"}"# + "\n", exitStatus: 0)
         let reply = try await HostEventClient(runner: runner).registerAPNs(

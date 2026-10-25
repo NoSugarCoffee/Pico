@@ -108,6 +108,7 @@ enum RemoteHostSetup {
     }
 
     static func removeHost(name: String, services: RemoteServices) async throws {
+        await PushRegistration.unregister(host: name, services: services)
         try services.store.remove(name: name)
         PushRegistration.forget(host: name)
         await services.pool.invalidate(host: name)

@@ -51,6 +51,26 @@ struct PushRegistrationRecord: Codable, Equatable {
     var keyID: String
     /// The last background re-registration's failure, shown on the host's Notifications screen.
     var lastError: String?
+    /// Every key this phone kept for the host, because earlier ones still open queued notices; removing the
+    /// host has to delete all of them, not just the active one.
+    var keyIDs: [String]
+
+    private enum CodingKeys: String, CodingKey { case token, keyID = "keyId", lastError, keyIDs }
+
+    init(token: String, keyID: String, lastError: String?, keyIDs: [String]) {
+        self.token = token
+        self.keyID = keyID
+        self.lastError = lastError
+        self.keyIDs = keyIDs
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        token = try container.decode(String.self, forKey: .token)
+        keyID = try container.decode(String.self, forKey: .keyID)
+        lastError = try container.decodeIfPresent(String.self, forKey: .lastError)
+        keyIDs = try container.decodeIfPresent([String].self, forKey: .keyIDs) ?? [keyID]
+    }
 }
 
 /// Hands APNs device tokens from the app delegate to whoever asked for one.
@@ -102,6 +122,8 @@ enum PushRegistration {
     /// A launch refresh and Send to This iPhone can aim at the same host; hostd keeps one pending key, so
     /// the second run would replace the first one's key and fail to activate. Both wait on the same run instead.
     private static var inFlight: [String: Task<Void, Error>] = [:]
+    /// Bumped when a host is removed, so a registration already talking to hostd cannot save a record for it.
+    private static var generations: [String: Int] = [:]
 
     static func tokenHex(_ token: Data) -> String {
         token.map { String(format: "%02x", $0) }.joined()
@@ -111,7 +133,8 @@ enum PushRegistration {
         if let running = inFlight[host] {
             return try await running.value
         }
-        let running = Task { try await performRegister(host: host, using: deps) }
+        let generation = generations[host, default: 0]
+        let running = Task { try await performRegister(host: host, generation: generation, using: deps) }
         inFlight[host] = running
         defer { inFlight[host] = nil }
         try await running.value
@@ -119,7 +142,7 @@ enum PushRegistration {
 
     /// The order is the point: hostd seals with the new key only after `activate`, which runs only once
     /// the key is in the keychain, so an interrupted run leaves the host on the key the phone already has.
-    private static func performRegister(host: String, using deps: Dependencies) async throws {
+    private static func performRegister(host: String, generation: Int, using deps: Dependencies) async throws {
         guard try await deps.authorize() else { throw PushRegistrationError.notificationsDenied }
         let token = tokenHex(try await deps.deviceToken())
         let reply = try await deps.register(host, token, deps.topic, deps.environment.rawValue)
@@ -127,11 +150,35 @@ enum PushRegistration {
             throw PushRegistrationError.undecodableKey(host: host)
         }
         try deps.saveKey(key, host, reply.keyID)
-        try await deps.activate(host, reply.keyID)
+        // The key id is kept before activation: if activation fails, removing the host still finds the key.
         var records = deps.records()
-        records[host] = PushRegistrationRecord(token: token, keyID: reply.keyID, lastError: nil)
+        let previous = records[host]
+        records[host] = PushRegistrationRecord(
+            token: previous?.token ?? token, keyID: previous?.keyID ?? reply.keyID, lastError: nil,
+            keyIDs: (previous?.keyIDs ?? []) + [reply.keyID])
+        deps.saveRecords(records)
+        guard generation == generations[host, default: 0] else { throw CancellationError() }
+        do {
+            try await deps.activate(host, reply.keyID)
+        } catch {
+            recordFailure(host: host, generation: generation, error: error, using: deps)
+            throw error
+        }
+        guard generation == generations[host, default: 0] else { throw CancellationError() }
+        records = deps.records()
+        records[host]?.token = token
+        records[host]?.keyID = reply.keyID
+        records[host]?.lastError = nil
         deps.saveRecords(records)
         logger.info("[PicoPush] registered \(host) with key \(reply.keyID)")
+    }
+
+    private static func recordFailure(host: String, generation: Int, error: Error, using deps: Dependencies) {
+        guard generation == generations[host, default: 0], var record = deps.records()[host] else { return }
+        record.lastError = message(for: error)
+        var records = deps.records()
+        records[host] = record
+        deps.saveRecords(records)
     }
 
     /// Hosts this phone registered with, again, when iOS has since given it a different token.
@@ -183,16 +230,48 @@ enum PushRegistration {
     }
 
     /// A removed host leaves no key behind and no record that would claim its name is still registered.
+    /// The record stays when the keychain refuses, so the removal is retried on the next launch.
     static func forget(host: String) {
+        invalidate(host: host)
         var records = Dependencies.liveRecords()
-        guard let record = records.removeValue(forKey: host) else { return }
-        Dependencies.saveLiveRecords(records)
+        guard let record = records[host] else { return }
         do {
-            try KeychainPushKeyStore(bundle: .main).deleteKey(host: host, keyID: record.keyID)
+            let keys = try KeychainPushKeyStore(bundle: .main)
+            for keyID in record.keyIDs {
+                try keys.deleteKey(host: host, keyID: keyID)
+            }
         } catch {
-            logger.error("[PicoPush] could not delete the key of \(host): \(error)")
+            logger.error("[PicoPush] could not delete the keys of \(host): \(error)")
+            return
         }
+        records.removeValue(forKey: host)
+        Dependencies.saveLiveRecords(records)
         logger.info("[PicoPush] forgot \(host)")
+    }
+
+    /// A removal bumps the generation, so a registration still awaiting hostd cannot persist afterwards.
+    static func invalidate(host: String) {
+        generations[host, default: 0] += 1
+        inFlight[host]?.cancel()
+        inFlight[host] = nil
+    }
+
+    /// Registrations for hosts the user has since removed; `forget` also retries a keychain deletion that failed.
+    static func forgetRemovedHosts(existing: Set<String>) {
+        for host in Dependencies.liveRecords().keys where !existing.contains(host) {
+            forget(host: host)
+        }
+    }
+
+    /// Stops notices for a host the user is removing, before its SSH settings are gone. Best effort: an old
+    /// minis-hostd has no `apns unregister`, and the local key is deleted either way.
+    static func unregister(host: String, services: RemoteServices) async {
+        invalidate(host: host)
+        do {
+            _ = try await HostEventClient(runner: services.executor).unregisterAPNs(host: host)
+        } catch {
+            logger.error("[PicoPush] could not stop notices for \(host) on the host: \(error)")
+        }
     }
 
     /// Set while the stored records cannot be read, because registering again replaces the blob and the
@@ -214,6 +293,7 @@ enum PushRegistration {
             return
         }
         do {
+            forgetRemovedHosts(existing: Set(services.store.hosts.map(\.name)))
             let deps = try Dependencies.live(services: services)
             Task { await refreshChangedTokens(using: deps) }
         } catch {

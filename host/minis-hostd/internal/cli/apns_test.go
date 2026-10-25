@@ -84,7 +84,7 @@ func TestAPNsRegisterRejectsBadInput(t *testing.T) {
 		{"apns", "register", deviceToken, "--topic", "com.example.pico", "--json"},
 		{"apns", "register", "XYZ", "--topic", "com.example.pico", "--environment", "development", "--json"},
 		{"apns", "register", deviceToken, "--topic", "com.example.pico", "--environment", "staging", "--json"},
-		{"apns", "unregister", "--json"},
+		{"apns", "replace", "--json"},
 		{"apns", "activate", "--json"},
 	}
 	for _, args := range cases {
@@ -92,6 +92,34 @@ func TestAPNsRegisterRejectsBadInput(t *testing.T) {
 		if status != ExitError || !strings.Contains(stdout, `"code":"bad_request"`) {
 			t.Errorf("%v: status %d stdout %s", args, status, stdout)
 		}
+	}
+}
+
+func TestAPNsUnregisterStopsTheNotices(t *testing.T) {
+	dir := t.TempDir()
+	out := register(t, dir)
+	if status, _, stderr := runIn(dir, "apns", "activate", out.KeyID, "--json"); status != ExitOK {
+		t.Fatal(stderr)
+	}
+	status, stdout, stderr := runIn(dir, "apns", "unregister", "--json")
+	if status != ExitOK {
+		t.Fatalf("status %d stderr %s", status, stderr)
+	}
+	if !strings.Contains(stdout, `"ok":true`) {
+		t.Errorf("stdout %s", stdout)
+	}
+	path := filepath.Join(dir, notify.RegistrationFile)
+	if _, err := notify.ActiveDevice(path); !errors.Is(err, notify.ErrNotRegistered) {
+		t.Fatalf("still registered: %v", err)
+	}
+	if status, _, stderr := runIn(dir, "apns", "unregister", "--json"); status != ExitOK {
+		t.Fatalf("second unregister: status %d stderr %s", status, stderr)
+	}
+}
+
+func TestAPNsUnregisterRejectsExtraArguments(t *testing.T) {
+	if status, _, _ := runIn(t.TempDir(), "apns", "unregister", "extra", "--json"); status != ExitError {
+		t.Fatalf("status %d", status)
 	}
 }
 
