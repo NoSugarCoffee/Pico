@@ -76,6 +76,32 @@ final class PushRegistrationTests: XCTestCase {
         XCTAssertEqual(hostCalls, 1)
     }
 
+    func testAKeyThatIsNotAES256IsRefusedBeforeSaving() async {
+        let recorder = Recorder()
+        var dependencies = deps(recorder)
+        dependencies.register = { host, token, topic, environment in
+            recorder.steps.append("register \(host) \(token) \(topic) \(environment)")
+            return HostdAPNsRegistration(keyID: "k-\(host)", key: Data([1, 2, 3]).base64EncodedString())
+        }
+        do {
+            try await PushRegistration.register(host: "mac-mini", using: dependencies)
+            XCTFail("saved a key CryptoKit cannot use")
+        } catch {
+            XCTAssertEqual(error as? PushRegistrationError, .undecodableKey(host: "mac-mini"))
+        }
+        XCTAssertEqual(recorder.steps, ["register mac-mini 0f1e com.example.pico development"])
+        XCTAssertNil(recorder.records["mac-mini"])
+    }
+
+    func testARebuiltBlobClearsTheUnreadableCopies() {
+        let defaults = UserDefaults.standard
+        let key = PushRegistration.unreadableRecordsKeyPrefix + "test-\(UUID().uuidString)"
+        defaults.set(Data("stale".utf8), forKey: key)
+        PushRegistration.Dependencies.clearUnreadableRecordsBackups()
+        XCTAssertNil(defaults.data(forKey: key))
+        XCTAssertNil(PushRegistration.recordsProblem())
+    }
+
     func testUnreadableRecordsAreKeptAsideAndReported() throws {
         let defaults = UserDefaults.standard
         let saved = defaults.data(forKey: PushRegistration.recordsKey)

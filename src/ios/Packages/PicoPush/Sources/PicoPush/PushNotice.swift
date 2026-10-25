@@ -19,9 +19,9 @@ public struct PushEnvelope: Decodable, Equatable, Sendable {
     }
 
     public init(userInfo: [AnyHashable: Any]) throws {
-        guard let object = userInfo["pico"], JSONSerialization.isValidJSONObject(object) else {
-            throw PushOpenError.notAPicoNotice
-        }
+        guard let object = userInfo["pico"] else { throw PushOpenError.notAPicoNotice }
+        // `pico` is there, so this is Pico's notice even when its value is not an object at all.
+        guard JSONSerialization.isValidJSONObject(object) else { throw PushOpenError.malformedNotice }
         do {
             self = try JSONDecoder().decode(Self.self, from: JSONSerialization.data(withJSONObject: object))
         } catch {
@@ -54,6 +54,9 @@ public enum PushOpenError: Error, Equatable, Sendable {
 }
 
 public enum PushCrypto {
+    /// The AES-256 key hostd draws for a registration; a key of any other length cannot open notices.
+    public static let keyLength = 32
+
     /// Must match hostd's `notify.AdditionalData`: it ties a notice to its host.
     public static func additionalData(host: String) -> Data {
         Data("pico-push-v1:\(host)".utf8)

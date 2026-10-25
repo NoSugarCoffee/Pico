@@ -123,7 +123,9 @@ enum PushRegistration {
         guard try await deps.authorize() else { throw PushRegistrationError.notificationsDenied }
         let token = tokenHex(try await deps.deviceToken())
         let reply = try await deps.register(host, token, deps.topic, deps.environment.rawValue)
-        guard let key = Data(base64Encoded: reply.key) else { throw PushRegistrationError.undecodableKey(host: host) }
+        guard let key = Data(base64Encoded: reply.key), key.count == PushCrypto.keyLength else {
+            throw PushRegistrationError.undecodableKey(host: host)
+        }
         try deps.saveKey(key, host, reply.keyID)
         try await deps.activate(host, reply.keyID)
         var records = deps.records()
@@ -222,6 +224,13 @@ extension PushRegistration.Dependencies {
         logger.info("[PicoPush] kept the unreadable registration records as \(key)")
     }
 
+    static func clearUnreadableRecordsBackups() {
+        for key in UserDefaults.standard.dictionaryRepresentation().keys
+        where key.hasPrefix(PushRegistration.unreadableRecordsKeyPrefix) {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+    }
+
     static func live(services: RemoteServices) throws -> Self {
         let keys = try KeychainPushKeyStore(bundle: .main)
         let client = HostEventClient(runner: services.executor)
@@ -243,6 +252,8 @@ extension PushRegistration.Dependencies {
             saveRecords: { records in
                 do {
                     UserDefaults.standard.set(try JSONEncoder().encode(records), forKey: PushRegistration.recordsKey)
+                    // The blob decodes again, so the copies kept from a corrupt one are only clutter.
+                    clearUnreadableRecordsBackups()
                 } catch {
                     logger.error("[PicoPush] saving registration records failed: \(error)")
                 }

@@ -83,6 +83,9 @@ final class PushNoticeTests: XCTestCase {
         XCTAssertThrowsError(try PushEnvelope(userInfo: ["pico": ["host": "mac-mini"]])) {
             XCTAssertEqual($0 as? PushOpenError, .malformedNotice)
         }
+        XCTAssertThrowsError(try PushEnvelope(userInfo: ["pico": "not an object"])) {
+            XCTAssertEqual($0 as? PushOpenError, .malformedNotice)
+        }
     }
 
     func testAuthenticBytesThatDoNotDecodeAreMalformed() throws {
