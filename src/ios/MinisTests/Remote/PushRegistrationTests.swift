@@ -32,6 +32,7 @@ final class PushRegistrationTests: XCTestCase {
                 recorder.steps.append("save \(host) \(keyID) \(key.count)")
                 if recorder.failSave { throw SaveFailed() }
             },
+            deleteKey: { host, keyID in recorder.steps.append("delete \(host) \(keyID)") },
             activate: { host, keyID in
                 recorder.steps.append("activate \(host) \(keyID)")
                 if recorder.failActivate { throw SaveFailed() }
@@ -239,8 +240,8 @@ final class PushRegistrationTests: XCTestCase {
         } catch {
             XCTAssertTrue(error is CancellationError, "\(error)")
         }
-        XCTAssertEqual(recorder.records["mac-mini"]?.keyID, "k-mac-mini", "only the pre-activation record, never activated")
-        XCTAssertNil(recorder.records["mac-mini"]?.lastError)
+        XCTAssertNil(recorder.records["mac-mini"], "the record of the removed host is dropped")
+        XCTAssertTrue(recorder.steps.contains("delete mac-mini k-mac-mini"), "\(recorder.steps)")
     }
 
     func testARecordWithoutKeyIDsDecodesFromItsKeyID() throws {

@@ -111,6 +111,7 @@ enum PushRegistration {
         var register: (_ host: String, _ token: String, _ topic: String, _ environment: String) async throws
             -> HostdAPNsRegistration
         var saveKey: (_ key: Data, _ host: String, _ keyID: String) throws -> Void
+        var deleteKey: (_ host: String, _ keyID: String) throws -> Void
         var activate: (_ host: String, _ keyID: String) async throws -> Void
         var records: () -> [String: PushRegistrationRecord]
         var saveRecords: ([String: PushRegistrationRecord]) -> Void
@@ -169,7 +170,7 @@ enum PushRegistration {
             throw error
         }
         guard generation == generations[host, default: 0] else {
-            discard(host: host, keyID: reply.keyID)
+            discard(host: host, keyID: reply.keyID, using: deps)
             throw CancellationError()
         }
         records = deps.records()
@@ -257,15 +258,15 @@ enum PushRegistration {
     }
 
     /// A registration that resumed after its host was removed: drop the key it saved and its record.
-    private static func discard(host: String, keyID: String) {
+    private static func discard(host: String, keyID: String, using deps: Dependencies) {
         do {
-            try KeychainPushKeyStore(bundle: .main).deleteKey(host: host, keyID: keyID)
+            try deps.deleteKey(host, keyID)
         } catch {
             logger.error("[PicoPush] could not delete the key of \(host) after its removal: \(error)")
         }
-        var records = Dependencies.liveRecords()
+        var records = deps.records()
         records.removeValue(forKey: host)
-        Dependencies.saveLiveRecords(records)
+        deps.saveRecords(records)
     }
 
     /// A removal bumps the generation, so a registration still awaiting hostd cannot persist afterwards.
@@ -285,7 +286,7 @@ enum PushRegistration {
     /// Stops notices for a host the user is removing, before its SSH settings are gone. Best effort: an old
     /// minis-hostd has no `apns unregister`, and the local key is deleted either way.
     static func unregister(host: String, services: RemoteServices) async {
-        guard Dependencies.liveRecords()[host] != nil else { return }
+        if Dependencies.recordsAreReadable(), Dependencies.liveRecords()[host] == nil { return }
         invalidate(host: host)
         do {
             _ = try await HostEventClient(runner: services.executor).unregisterAPNs(host: host)
@@ -331,6 +332,12 @@ extension PushRegistration.Dependencies {
         }
     }
 
+    /// False when the blob exists but does not decode, because then no host's state is known.
+    static func recordsAreReadable() -> Bool {
+        guard let data = UserDefaults.standard.data(forKey: PushRegistration.recordsKey) else { return true }
+        return (try? JSONDecoder().decode([String: PushRegistrationRecord].self, from: data)) != nil
+    }
+
     static func liveRecords() -> [String: PushRegistrationRecord] {
         guard let data = UserDefaults.standard.data(forKey: PushRegistration.recordsKey) else { return [:] }
         do {
@@ -371,6 +378,7 @@ extension PushRegistration.Dependencies {
                 try await client.registerAPNs(host: host, deviceToken: token, topic: topic, environment: environment)
             },
             saveKey: { key, host, keyID in try keys.setKey(key, host: host, keyID: keyID) },
+            deleteKey: { host, keyID in try keys.deleteKey(host: host, keyID: keyID) },
             activate: { host, keyID in _ = try await client.activateAPNs(host: host, keyID: keyID) },
             records: liveRecords,
             saveRecords: saveLiveRecords)
