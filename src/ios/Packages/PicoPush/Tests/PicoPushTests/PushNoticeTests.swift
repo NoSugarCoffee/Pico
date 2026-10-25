@@ -38,7 +38,7 @@ final class PushNoticeTests: XCTestCase {
         XCTAssertEqual(try PushNoticeOpener.open(userInfo: vector.userInfo, keys: keys), vector.notice)
     }
 
-    func testAnotherHostsKeyCannotOpenIt() throws {
+    func testANoticeIsBoundToItsHost() throws {
         let vector = try vector()
         let envelope = try PushEnvelope(userInfo: vector.userInfo)
         let relabelled = PushEnvelope(v: envelope.v, host: "other-host", k: envelope.k, c: envelope.c)
@@ -76,6 +76,23 @@ final class PushNoticeTests: XCTestCase {
         }
         XCTAssertThrowsError(try PushEnvelope(userInfo: ["pico": ["v": 2, "host": "h", "k": "", "c": ""]])) {
             XCTAssertEqual($0 as? PushOpenError, .unsupportedVersion(2))
+        }
+    }
+
+    func testABrokenEnvelopeIsNotMistakenForSomebodyElsesNotice() {
+        XCTAssertThrowsError(try PushEnvelope(userInfo: ["pico": ["host": "mac-mini"]])) {
+            XCTAssertEqual($0 as? PushOpenError, .malformedNotice)
+        }
+    }
+
+    func testAuthenticBytesThatDoNotDecodeAreMalformed() throws {
+        let key = SymmetricKey(size: .bits256)
+        let sealed = try AES.GCM.seal(
+            Data("not a notice".utf8), using: key, authenticating: PushCrypto.additionalData(host: "mac-mini"))
+        let envelope = PushEnvelope(
+            v: 1, host: "mac-mini", k: "k1", c: try XCTUnwrap(sealed.combined).base64EncodedString())
+        XCTAssertThrowsError(try PushCrypto.open(envelope, key: key.withUnsafeBytes { Data($0) })) {
+            XCTAssertEqual($0 as? PushOpenError, .malformedNotice)
         }
     }
 

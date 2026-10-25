@@ -74,6 +74,12 @@ for key in com.apple.developer.icloud-container-identifiers com.apple.developer.
 done
 if [ "$keep_push" -eq 0 ]; then
 	/usr/libexec/PlistBuddy -c "Delete :aps-environment" "$entitlements" 2>/dev/null || true
+	# The group exists only to share push keys with the extension, and a free team cannot sign one.
+	/usr/libexec/PlistBuddy -c "Delete :keychain-access-groups" "$entitlements" 2>/dev/null || true
+	extension_entitlements="$work/src/ios/PicoNotificationService/PicoNotificationService.entitlements"
+	if [ -f "$extension_entitlements" ]; then
+		/usr/libexec/PlistBuddy -c "Delete :keychain-access-groups" "$extension_entitlements" 2>/dev/null || true
+	fi
 fi
 if [ "$keep_healthkit" -eq 0 ]; then
 	/usr/libexec/PlistBuddy -c "Delete :com.apple.developer.healthkit" "$entitlements" 2>/dev/null || true

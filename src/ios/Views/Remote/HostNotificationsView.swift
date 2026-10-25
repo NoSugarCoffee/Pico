@@ -55,7 +55,7 @@ struct HostNotificationsView: View {
         } footer: {
             VStack(alignment: .leading, spacing: 4) {
                 Text(RemoteHostL10n.string("Run the command on \(hostName). It installs minis-hostd \(HostdRelease.version) to ~/.minis/bin after checking its SHA-256, and writes ~/.minis/hostd/config.toml. Then, on the host:"))
-                Text(RemoteHostL10n.string("1. Edit ~/.minis/hostd/config.toml: turn on a Gmail account or GitHub, then fill in [bark] with the Bark device key (and set Push Encryption to AES256 / GCM / noPadding with the encryption_key from the file), or [apns] with your APNs key as described under Pico Notifications."))
+                Text(RemoteHostL10n.string("1. Edit ~/.minis/hostd/config.toml: turn on a Gmail account or GitHub, and paste the Bark device key. In the Bark app, set Push Encryption to AES256 / GCM / noPadding with the encryption_key from the file."))
                 Text(RemoteHostL10n.string("Using Pico Notifications? Put the [apns] section in place of [bark] and point it at your APNs key."))
                 Text(RemoteHostL10n.string("2. Check everything and send a test push: ~/.minis/bin/minis-hostd doctor --push-test"))
                 Text(RemoteHostL10n.string("3. Start it as a service: ~/.minis/bin/minis-hostd install-service"))
@@ -82,7 +82,7 @@ struct HostNotificationsView: View {
             .disabled(pushState == .registering)
             switch pushState {
             case .registered:
-                Label(RemoteHostL10n.string("This iPhone is registered. Run minis-hostd doctor --push-test on \(hostName) to try it."), systemImage: "checkmark.circle.fill")
+                Label(RemoteHostL10n.string("This iPhone is registered. Run ~/.minis/bin/minis-hostd doctor --push-test on \(hostName) to try it."), systemImage: "checkmark.circle.fill")
                     .foregroundStyle(.green)
             case .failed(let message):
                 Text(message)

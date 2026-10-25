@@ -13222,7 +13222,7 @@
         }
       }
     },
-    "Saving the notification key failed (keychain %@, status %d)." : {
+    "Saving the notification key failed (keychain %@, status %lld)." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
@@ -13234,7 +13234,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saving the notification key failed (keychain %@, status %d)."
+            "value" : "Saving the notification key failed (keychain %@, status %lld)."
           }
         },
         "es" : {
@@ -13246,7 +13246,7 @@
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nabigo ang pag-save ng notification key (keychain %@, status %d)."
+            "value" : "Nabigo ang pag-save ng notification key (keychain %@, status %lld)."
           }
         },
         "fr" : {
@@ -13258,13 +13258,13 @@
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spremanje ključa obavijesti nije uspjelo (keychain %@, status %d)."
+            "value" : "Spremanje ključa obavijesti nije uspjelo (keychain %@, status %lld)."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gagal menyimpan kunci notifikasi (keychain %@, status %d)."
+            "value" : "Gagal menyimpan kunci notifikasi (keychain %@, status %lld)."
           }
         },
         "ja" : {
@@ -13282,25 +13282,25 @@
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gagal menyimpan kunci notis (keychain %@, status %d)."
+            "value" : "Gagal menyimpan kunci notis (keychain %@, status %lld)."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zapisanie klucza powiadomień nie powiodło się (pęk kluczy %@, status %d)."
+            "value" : "Zapisanie klucza powiadomień nie powiodło się (pęk kluczy %@, status %lld)."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Não foi possível salvar a chave de avisos (chaveiro %@, status %d)."
+            "value" : "Não foi possível salvar a chave de avisos (chaveiro %@, status %lld)."
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Salvarea cheii de notificări a eșuat (keychain %@, status %d)."
+            "value" : "Salvarea cheii de notificări a eșuat (keychain %@, status %lld)."
           }
         },
         "ru" : {
@@ -17629,115 +17629,115 @@
         }
       }
     },
-    "This iPhone is registered. Run minis-hostd doctor --push-test on %@ to try it." : {
+    "This iPhone is registered. Run ~/.minis/bin/minis-hostd doctor --push-test on %@ to try it." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dieses iPhone ist registriert. Führe auf %@ minis-hostd doctor --push-test aus, um es zu testen."
+            "value" : "Dieses iPhone ist registriert. Führe auf %@ ~/.minis/bin/minis-hostd doctor --push-test aus, um es zu testen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This iPhone is registered. Run minis-hostd doctor --push-test on %@ to try it."
+            "value" : "This iPhone is registered. Run ~/.minis/bin/minis-hostd doctor --push-test on %@ to try it."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este iPhone está registrado. Ejecuta minis-hostd doctor --push-test en %@ para probarlo."
+            "value" : "Este iPhone está registrado. Ejecuta ~/.minis/bin/minis-hostd doctor --push-test en %@ para probarlo."
           }
         },
         "fil" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nakarehistro na ang iPhone na ito. Patakbuhin ang minis-hostd doctor --push-test sa %@ para subukan ito."
+            "value" : "Nakarehistro na ang iPhone na ito. Patakbuhin ang ~/.minis/bin/minis-hostd doctor --push-test sa %@ para subukan ito."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cet iPhone est enregistré. Lancez minis-hostd doctor --push-test sur %@ pour l’essayer."
+            "value" : "Cet iPhone est enregistré. Lancez ~/.minis/bin/minis-hostd doctor --push-test sur %@ pour l’essayer."
           }
         },
         "hr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ovaj iPhone je registriran. Pokrenite minis-hostd doctor --push-test na %@ da biste ga isprobali."
+            "value" : "Ovaj iPhone je registriran. Pokrenite ~/.minis/bin/minis-hostd doctor --push-test na %@ da biste ga isprobali."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone ini sudah terdaftar. Jalankan minis-hostd doctor --push-test di %@ untuk mencobanya."
+            "value" : "iPhone ini sudah terdaftar. Jalankan ~/.minis/bin/minis-hostd doctor --push-test di %@ untuk mencobanya."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このiPhoneは登録済みです。%@ で minis-hostd doctor --push-test を実行すると試せます。"
+            "value" : "このiPhoneは登録済みです。%@ で ~/.minis/bin/minis-hostd doctor --push-test を実行すると試せます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 iPhone이 등록되었습니다. %@에서 minis-hostd doctor --push-test를 실행해 확인하세요."
+            "value" : "이 iPhone이 등록되었습니다. %@에서 ~/.minis/bin/minis-hostd doctor --push-test를 실행해 확인하세요."
           }
         },
         "ms" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone ini telah didaftarkan. Jalankan minis-hostd doctor --push-test pada %@ untuk mencubanya."
+            "value" : "iPhone ini telah didaftarkan. Jalankan ~/.minis/bin/minis-hostd doctor --push-test pada %@ untuk mencubanya."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ten iPhone jest zarejestrowany. Uruchom minis-hostd doctor --push-test na %@, aby go przetestować."
+            "value" : "Ten iPhone jest zarejestrowany. Uruchom ~/.minis/bin/minis-hostd doctor --push-test na %@, aby go przetestować."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este iPhone está registrado. Execute minis-hostd doctor --push-test em %@ para testar."
+            "value" : "Este iPhone está registrado. Execute ~/.minis/bin/minis-hostd doctor --push-test em %@ para testar."
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Acest iPhone este înregistrat. Rulați minis-hostd doctor --push-test pe %@ pentru a-l încerca."
+            "value" : "Acest iPhone este înregistrat. Rulați ~/.minis/bin/minis-hostd doctor --push-test pe %@ pentru a-l încerca."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Этот iPhone зарегистрирован. Запустите minis-hostd doctor --push-test на %@, чтобы проверить."
+            "value" : "Этот iPhone зарегистрирован. Запустите ~/.minis/bin/minis-hostd doctor --push-test на %@, чтобы проверить."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone เครื่องนี้ลงทะเบียนแล้ว รัน minis-hostd doctor --push-test บน %@ เพื่อทดลอง"
+            "value" : "iPhone เครื่องนี้ลงทะเบียนแล้ว รัน ~/.minis/bin/minis-hostd doctor --push-test บน %@ เพื่อทดลอง"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu iPhone kayıtlı. Denemek için %@ üzerinde minis-hostd doctor --push-test komutunu çalıştırın."
+            "value" : "Bu iPhone kayıtlı. Denemek için %@ üzerinde ~/.minis/bin/minis-hostd doctor --push-test komutunu çalıştırın."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此 iPhone 已注册。在 %@ 上运行 minis-hostd doctor --push-test 即可测试。"
+            "value" : "此 iPhone 已注册。在 %@ 上运行 ~/.minis/bin/minis-hostd doctor --push-test 即可测试。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這部 iPhone 已註冊。在 %@ 上執行 minis-hostd doctor --push-test 即可測試。"
+            "value" : "這部 iPhone 已註冊。在 %@ 上執行 ~/.minis/bin/minis-hostd doctor --push-test 即可測試。"
           }
         }
       }

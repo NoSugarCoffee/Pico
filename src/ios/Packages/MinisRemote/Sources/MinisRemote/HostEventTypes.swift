@@ -131,12 +131,17 @@ public struct HostdDoctor: Decodable, Equatable, Sendable {
 
 /// `apns register --json`: the pending key hostd drew for this phone (apns spec §4); `key` is base64.
 public struct HostdAPNsRegistration: Decodable, Equatable, Sendable {
-    public let keyId: String
+    public let keyID: String
     public let key: String
 
-    public init(keyId: String, key: String) {
-        self.keyId = keyId
+    public init(keyID: String, key: String) {
+        self.keyID = keyID
         self.key = key
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case keyID = "keyId"
+        case key
     }
 }
 

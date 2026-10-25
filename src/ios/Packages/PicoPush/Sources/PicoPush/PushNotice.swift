@@ -25,7 +25,8 @@ public struct PushEnvelope: Decodable, Equatable, Sendable {
         do {
             self = try JSONDecoder().decode(Self.self, from: JSONSerialization.data(withJSONObject: object))
         } catch {
-            throw PushOpenError.notAPicoNotice
+            // A `pico` key that does not decode is a broken notice, not somebody else's notification.
+            throw PushOpenError.malformedNotice
         }
         guard v == Self.version else { throw PushOpenError.unsupportedVersion(v) }
     }
@@ -46,6 +47,7 @@ public struct SealedNotice: Codable, Equatable, Sendable {
 
 public enum PushOpenError: Error, Equatable, Sendable {
     case notAPicoNotice
+    case malformedNotice
     case unsupportedVersion(Int)
     case noKey(host: String)
     case undecryptable(host: String)
@@ -61,13 +63,19 @@ public enum PushCrypto {
         guard let combined = Data(base64Encoded: envelope.c) else {
             throw PushOpenError.undecryptable(host: envelope.host)
         }
+        let plaintext: Data
         do {
             let box = try AES.GCM.SealedBox(combined: combined)
-            let plaintext = try AES.GCM.open(
+            plaintext = try AES.GCM.open(
                 box, using: SymmetricKey(data: key), authenticating: additionalData(host: envelope.host))
-            return try JSONDecoder().decode(SealedNotice.self, from: plaintext)
         } catch {
             throw PushOpenError.undecryptable(host: envelope.host)
+        }
+        // The bytes are authentic at this point, so a decode failure is a broken notice, not a stale key.
+        do {
+            return try JSONDecoder().decode(SealedNotice.self, from: plaintext)
+        } catch {
+            throw PushOpenError.malformedNotice
         }
     }
 

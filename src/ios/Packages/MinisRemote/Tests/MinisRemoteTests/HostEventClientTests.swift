@@ -68,7 +68,7 @@ final class HostEventClientTests: XCTestCase {
         let runner = RecordingRunner(stdout: #"{"schemaVersion":1,"keyId":"0a1b","key":"AAEC"}"# + "\n", exitStatus: 0)
         let reply = try await HostEventClient(runner: runner).registerAPNs(
             host: "mac-mini", deviceToken: "0f1e", topic: "com.example.pico", environment: "development")
-        XCTAssertEqual(reply, HostdAPNsRegistration(keyId: "0a1b", key: "AAEC"))
+        XCTAssertEqual(reply, HostdAPNsRegistration(keyID: "0a1b", key: "AAEC"))
         let scripts = await runner.scripts
         XCTAssertEqual(scripts, [
             #""$HOME/.minis/bin/minis-hostd" 'apns' 'register' '0f1e' '--topic' 'com.example.pico' '--environment' 'development' --json"#,

@@ -36,7 +36,7 @@ final class HostEventContractTests: XCTestCase {
 
     func testAPNsRegisterReply() throws {
         let registration = try decode("apns_register.json", as: HostdAPNsRegistration.self)
-        XCTAssertEqual(registration.keyId.count, 16)
+        XCTAssertEqual(registration.keyID.count, 16)
         XCTAssertEqual(Data(base64Encoded: registration.key)?.count, 32)
     }
 

@@ -25,7 +25,7 @@ final class PushRegistrationTests: XCTestCase {
             environment: .development,
             register: { host, token, topic, environment in
                 recorder.steps.append("register \(host) \(token) \(topic) \(environment)")
-                return HostdAPNsRegistration(keyId: "k-\(host)", key: Data(repeating: 1, count: 32).base64EncodedString())
+                return HostdAPNsRegistration(keyID: "k-\(host)", key: Data(repeating: 1, count: 32).base64EncodedString())
             },
             saveKey: { key, host, keyID in
                 recorder.steps.append("save \(host) \(keyID) \(key.count)")
@@ -68,7 +68,7 @@ final class PushRegistrationTests: XCTestCase {
         dependencies.register = { host, _, _, _ in
             hostCalls += 1
             try await Task.sleep(nanoseconds: 30_000_000)
-            return HostdAPNsRegistration(keyId: "k-\(host)", key: Data(repeating: 1, count: 32).base64EncodedString())
+            return HostdAPNsRegistration(keyID: "k-\(host)", key: Data(repeating: 1, count: 32).base64EncodedString())
         }
         async let first: Void = PushRegistration.register(host: "mac-mini", using: dependencies)
         async let second: Void = PushRegistration.register(host: "mac-mini", using: dependencies)

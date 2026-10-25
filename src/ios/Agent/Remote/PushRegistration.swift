@@ -124,12 +124,12 @@ enum PushRegistration {
         let token = tokenHex(try await deps.deviceToken())
         let reply = try await deps.register(host, token, deps.topic, deps.environment.rawValue)
         guard let key = Data(base64Encoded: reply.key) else { throw PushRegistrationError.undecodableKey(host: host) }
-        try deps.saveKey(key, host, reply.keyId)
-        try await deps.activate(host, reply.keyId)
+        try deps.saveKey(key, host, reply.keyID)
+        try await deps.activate(host, reply.keyID)
         var records = deps.records()
-        records[host] = PushRegistrationRecord(token: token, keyID: reply.keyId, lastError: nil)
+        records[host] = PushRegistrationRecord(token: token, keyID: reply.keyID, lastError: nil)
         deps.saveRecords(records)
-        logger.info("[PicoPush] registered \(host) with key \(reply.keyId)")
+        logger.info("[PicoPush] registered \(host) with key \(reply.keyID)")
     }
 
     /// Hosts this phone registered with, again, when iOS has since given it a different token.
