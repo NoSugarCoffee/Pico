@@ -195,6 +195,26 @@ final class PushRegistrationTests: XCTestCase {
         XCTAssertNotNil(recorder.records["mac-mini"]?.lastError)
     }
 
+    func testTheRefreshLoopSkipsAHostRemovedByAnEarlierOne() async {
+        let recorder = Recorder()
+        recorder.records = [
+            "a": PushRegistrationRecord(token: "aaaa", keyID: "ka", lastError: nil, keyIDs: ["ka"]),
+            "b": PushRegistrationRecord(token: "aaaa", keyID: "kb", lastError: nil, keyIDs: ["kb"]),
+        ]
+        var dependencies = deps(recorder)
+        dependencies.register = { host, _, _, _ in
+            recorder.steps.append("register \(host)")
+            if host == "a" {
+                // The user removes the second host while the first registration is in flight.
+                recorder.records.removeValue(forKey: "b")
+                PushRegistration.invalidate(host: "b")
+            }
+            return HostdAPNsRegistration(keyID: "k-\(host)", key: Data(repeating: 1, count: 32).base64EncodedString())
+        }
+        await PushRegistration.refreshChangedTokens(using: dependencies)
+        XCTAssertEqual(recorder.steps.filter { $0.hasPrefix("register") }, ["register a"])
+    }
+
     func testARemovalWhileHostdAnswersSavesNothing() async {
         let recorder = Recorder()
         var dependencies = deps(recorder)
