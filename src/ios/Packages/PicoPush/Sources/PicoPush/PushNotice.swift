@@ -121,9 +121,16 @@ public enum PushDisplayPolicy {
         } catch PushOpenError.notAPicoNotice {
             return PushDisplay(title: title, body: body, userInfo: userInfo)
         } catch let PushOpenError.noKey(host), let PushOpenError.undecryptable(host) {
-            return PushDisplay(title: title, body: failureBody(host), userInfo: userInfo)
+            return PushDisplay(title: title, body: failureBody(host), userInfo: keptEnvelope(userInfo))
         } catch {
-            return PushDisplay(title: title, body: unopenableBody, userInfo: userInfo)
+            return PushDisplay(title: title, body: unopenableBody, userInfo: keptEnvelope(userInfo))
         }
+    }
+
+    /// Only an opened notice may supply a tap link; a `pico_url` in a payload that did not open is not trusted.
+    private static func keptEnvelope(_ userInfo: [AnyHashable: Any]) -> [AnyHashable: Any] {
+        var kept = userInfo
+        kept[PushUserInfo.urlKey] = nil
+        return kept
     }
 }

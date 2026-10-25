@@ -224,8 +224,13 @@ extension PushRegistration.Dependencies {
     /// The next registration overwrites the blob, so the bytes are kept under their own key: without them
     /// every other host would silently drop out of the token-change refresh.
     private static func keepUnreadableRecords(_ data: Data) {
+        let defaults = UserDefaults.standard
+        let alreadyKept = defaults.dictionaryRepresentation().keys.contains {
+            $0.hasPrefix(PushRegistration.unreadableRecordsKeyPrefix) && defaults.data(forKey: $0) == data
+        }
+        guard !alreadyKept else { return }
         let key = PushRegistration.unreadableRecordsKeyPrefix + ISO8601DateFormatter().string(from: Date())
-        UserDefaults.standard.set(data, forKey: key)
+        defaults.set(data, forKey: key)
         logger.info("[PicoPush] kept the unreadable registration records as \(key)")
     }
 

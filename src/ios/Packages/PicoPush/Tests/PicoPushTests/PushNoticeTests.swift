@@ -145,6 +145,16 @@ final class PushNoticeTests: XCTestCase {
         XCTAssertNotNil(display.userInfo["pico"], "a tap must be able to retry the keys")
     }
 
+    func testAnUnopenedNoticeCannotSupplyATapLink() throws {
+        let userInfo = try vector().userInfo.merging([PushUserInfo.urlKey: "pico://host-event/mac-mini/evil"]) {
+            _, new in new
+        }
+        let display = PushDisplayPolicy.display(
+            title: "New event", body: "Open Pico to read it.", userInfo: userInfo,
+            keys: InMemoryPushKeyStore(), failureBody: { "failed:\($0)" }, unopenableBody: "unopenable")
+        XCTAssertNil((display.userInfo[PushUserInfo.urlKey] as? String).flatMap(URL.init(string:)))
+    }
+
     func testDisplayLeavesSomebodyElsesNotificationAlone() {
         let display = PushDisplayPolicy.display(
             title: "New event", body: "Open Pico to read it.", userInfo: ["aps": ["alert": "hi"]],
