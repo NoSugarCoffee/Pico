@@ -53,9 +53,51 @@ final class PushRegistrationTests: XCTestCase {
         do {
             try await PushRegistration.register(host: "mac-mini", using: deps(recorder))
             XCTFail("registered without saving the key")
-        } catch {}
+        } catch {
+            XCTAssertTrue(error is SaveFailed, "\(error)")
+        }
+        XCTAssertTrue(recorder.steps.contains { $0.hasPrefix("save mac-mini") })
         XCTAssertFalse(recorder.steps.contains { $0.hasPrefix("activate") })
         XCTAssertNil(recorder.records["mac-mini"])
+    }
+
+    func testTwoRegistrationsOfOneHostRunOnce() async throws {
+        let recorder = Recorder()
+        var dependencies = deps(recorder)
+        var hostCalls = 0
+        dependencies.register = { host, _, _, _ in
+            hostCalls += 1
+            try await Task.sleep(nanoseconds: 30_000_000)
+            return HostdAPNsRegistration(keyId: "k-\(host)", key: Data(repeating: 1, count: 32).base64EncodedString())
+        }
+        async let first: Void = PushRegistration.register(host: "mac-mini", using: dependencies)
+        async let second: Void = PushRegistration.register(host: "mac-mini", using: dependencies)
+        _ = try await (first, second)
+        XCTAssertEqual(hostCalls, 1)
+    }
+
+    func testUnreadableRecordsAreKeptAsideAndReported() throws {
+        let defaults = UserDefaults.standard
+        let saved = defaults.data(forKey: PushRegistration.recordsKey)
+        let existingBackups = Set(defaults.dictionaryRepresentation().keys.filter { $0.hasPrefix(PushRegistration.unreadableRecordsKeyPrefix) })
+        defer {
+            if let saved {
+                defaults.set(saved, forKey: PushRegistration.recordsKey)
+            } else {
+                defaults.removeObject(forKey: PushRegistration.recordsKey)
+            }
+            for key in defaults.dictionaryRepresentation().keys
+            where key.hasPrefix(PushRegistration.unreadableRecordsKeyPrefix) && !existingBackups.contains(key) {
+                defaults.removeObject(forKey: key)
+            }
+        }
+        defaults.set(Data("not a records blob".utf8), forKey: PushRegistration.recordsKey)
+        XCTAssertTrue(PushRegistration.Dependencies.liveRecords().isEmpty)
+        let backups = defaults.dictionaryRepresentation().keys
+            .filter { $0.hasPrefix(PushRegistration.unreadableRecordsKeyPrefix) && !existingBackups.contains($0) }
+        XCTAssertEqual(backups.count, 1)
+        XCTAssertEqual(defaults.data(forKey: try XCTUnwrap(backups.first)), Data("not a records blob".utf8))
+        XCTAssertNotNil(PushRegistration.recordsProblem())
     }
 
     func testDeniedNotificationsStopBeforeTheHost() async {

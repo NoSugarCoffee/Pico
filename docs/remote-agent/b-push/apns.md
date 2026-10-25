@@ -100,13 +100,14 @@ from before (up to 24 hours) decrypt by their key id.
   id, timing and the fixed placeholder text. Not the sender, subject, repository or link.
 - **Notification Service Extension** (`PicoNotificationService`): reads the host's key from a
   keychain group shared with the app (`<team prefix>.com.openminis.app.push`) by host and key id, decrypts, and replaces
-  title and body; it puts the link in `userInfo["url"]`. When decryption fails it shows "Pico could
-  not decrypt this notice. Open Settings → Remote Hosts → <host> → Notifications and tap Send to
-  This iPhone." and drops the link.
+  title and body; it puts the link in `userInfo["pico_url"]` and then removes the `pico` envelope.
+  When decryption fails it shows "Pico could not decrypt this notice. Open Settings → Remote Hosts →
+  <host> → Notifications and tap Send to This iPhone." and leaves the envelope in place, with no
+  `pico_url`, so the tap can try the same keys again.
   The keys are stored After First Unlock (`kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly`), since
   the extension runs while the phone is locked.
-- **Tap:** the notification delegate passes `userInfo["url"]` to the same `host-event` opener as the
-  `pico://` link (§9.1). Whenever the delivered notice has no `url` but still has the `pico`
+- **Tap:** the notification delegate passes `userInfo["pico_url"]` to the same `host-event` opener as the
+  `pico://` link (§9.1). Whenever the delivered notice has no `pico_url` but still has the `pico`
   envelope (the extension crashed, or its time ran out before it decrypted), the delegate opens the
   envelope itself with the same keys.
 

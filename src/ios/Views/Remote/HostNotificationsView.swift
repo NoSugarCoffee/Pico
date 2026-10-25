@@ -18,6 +18,7 @@ struct HostNotificationsView: View {
     @State private var copiedNotice: String?
     @State private var pushRecord: PushRegistrationRecord?
     @State private var pushState: PushRegistrationState = .idle
+    @State private var recordsProblem: String?
 
     private enum PushRegistrationState: Equatable {
         case idle
@@ -35,10 +36,7 @@ struct HostNotificationsView: View {
         }
         .navigationTitle(RemoteHostL10n.string("Notifications"))
         .navigationBarTitleDisplayMode(.inline)
-        .task {
-            pushRecord = PushRegistration.record(host: hostName)
-            await load()
-        }
+        .task { await load() }
         .refreshable { await load() }
     }
 
@@ -57,7 +55,8 @@ struct HostNotificationsView: View {
         } footer: {
             VStack(alignment: .leading, spacing: 4) {
                 Text(RemoteHostL10n.string("Run the command on \(hostName). It installs minis-hostd \(HostdRelease.version) to ~/.minis/bin after checking its SHA-256, and writes ~/.minis/hostd/config.toml. Then, on the host:"))
-                Text(RemoteHostL10n.string("1. Edit ~/.minis/hostd/config.toml: turn on a Gmail account or GitHub, and paste the Bark device key. In the Bark app, set Push Encryption to AES256 / GCM / noPadding with the encryption_key from the file."))
+                Text(RemoteHostL10n.string("1. Edit ~/.minis/hostd/config.toml: turn on a Gmail account or GitHub, then fill in [bark] with the Bark device key (and set Push Encryption to AES256 / GCM / noPadding with the encryption_key from the file), or [apns] with your APNs key as described under Pico Notifications."))
+                Text(RemoteHostL10n.string("Using Pico Notifications? Put the [apns] section in place of [bark] and point it at your APNs key."))
                 Text(RemoteHostL10n.string("2. Check everything and send a test push: ~/.minis/bin/minis-hostd doctor --push-test"))
                 Text(RemoteHostL10n.string("3. Start it as a service: ~/.minis/bin/minis-hostd install-service"))
                 if let copiedNotice {
@@ -91,7 +90,12 @@ struct HostNotificationsView: View {
                     .foregroundStyle(.red)
                     .textSelection(.enabled)
             case .idle, .registering:
-                if let lastError = pushRecord?.lastError {
+                if let problem = recordsProblem {
+                    Text(problem)
+                        .font(.callout)
+                        .foregroundStyle(.red)
+                        .textSelection(.enabled)
+                } else if let lastError = pushRecord?.lastError {
                     Text(lastError)
                         .font(.callout)
                         .foregroundStyle(.red)
@@ -204,6 +208,9 @@ struct HostNotificationsView: View {
         guard !isLoading else { return }
         isLoading = true
         defer { isLoading = false }
+        // A launch refresh can write a new record or error while this screen is open, so read it every load.
+        pushRecord = PushRegistration.record(host: hostName)
+        recordsProblem = PushRegistration.recordsProblem()
         let client = HostEventClient(runner: services.executor)
         let statusResult: Result<HostdStatus, Error>
         do {

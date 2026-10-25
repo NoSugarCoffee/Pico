@@ -27,10 +27,17 @@ final class HostEventContractTests: XCTestCase {
         // apns_payload.json is the APNs notice, decrypted by PicoPush's tests rather than this client.
         let names = try FileManager.default.contentsOfDirectory(atPath: Self.contractDirectory.path).sorted()
         XCTAssertEqual(names, [
-            "apns_payload.json", "batches_get.json", "doctor.json", "error_bad_request.json", "error_not_found.json", "error_schema_mismatch.json",
+            "apns_payload.json", "apns_register.json", "batches_get.json", "doctor.json", "error_bad_request.json", "error_not_found.json",
+            "error_schema_mismatch.json",
             "error_store_unavailable.json", "events_ack.json", "events_get_github.json", "events_get_mail.json",
             "events_list.json", "status.json",
         ], "a new golden file needs a decoding test here")
+    }
+
+    func testAPNsRegisterReply() throws {
+        let registration = try decode("apns_register.json", as: HostdAPNsRegistration.self)
+        XCTAssertEqual(registration.keyId.count, 16)
+        XCTAssertEqual(Data(base64Encoded: registration.key)?.count, 32)
     }
 
     func testMailEvent() throws {

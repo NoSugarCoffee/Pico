@@ -97,14 +97,29 @@ enum PushRegistration {
     }
 
     static let recordsKey = "pico.push.registrations"
+    static let unreadableRecordsKeyPrefix = "pico.push.registrations.unreadable-"
+
+    /// A launch refresh and Send to This iPhone can aim at the same host; hostd keeps one pending key, so
+    /// the second run would replace the first one's key and fail to activate. Both wait on the same run instead.
+    private static var inFlight: [String: Task<Void, Error>] = [:]
 
     static func tokenHex(_ token: Data) -> String {
         token.map { String(format: "%02x", $0) }.joined()
     }
 
+    static func register(host: String, using deps: Dependencies) async throws {
+        if let running = inFlight[host] {
+            return try await running.value
+        }
+        let running = Task { try await performRegister(host: host, using: deps) }
+        inFlight[host] = running
+        defer { inFlight[host] = nil }
+        try await running.value
+    }
+
     /// The order is the point: hostd seals with the new key only after `activate`, which runs only once
     /// the key is in the keychain, so an interrupted run leaves the host on the key the phone already has.
-    static func register(host: String, using deps: Dependencies) async throws {
+    private static func performRegister(host: String, using deps: Dependencies) async throws {
         guard try await deps.authorize() else { throw PushRegistrationError.notificationsDenied }
         let token = tokenHex(try await deps.deviceToken())
         let reply = try await deps.register(host, token, deps.topic, deps.environment.rawValue)
@@ -144,6 +159,9 @@ enum PushRegistration {
         if let registrationError = error as? PushRegistrationError {
             return registrationError.userMessage
         }
+        if error is ProvisioningProfileError {
+            return RemoteHostL10n.string("Pico could not read this build's provisioning profile, so it cannot tell whether to use the APNs sandbox. Rebuild the app with ios-personal-device.sh.")
+        }
         if let keychainError = error as? PushKeyStoreError {
             switch keychainError {
             case .missingAccessGroup:
@@ -160,6 +178,15 @@ enum PushRegistration {
 
     static func record(host: String) -> PushRegistrationRecord? {
         Dependencies.liveRecords()[host]
+    }
+
+    /// Set when a records blob could not be decoded, because registering again replaces it and the host
+    /// list only survives in the backup `liveRecords` keeps.
+    static func recordsProblem() -> String? {
+        let backups = UserDefaults.standard.dictionaryRepresentation().keys
+            .filter { $0.hasPrefix(unreadableRecordsKeyPrefix) }
+        guard !backups.isEmpty else { return nil }
+        return RemoteHostL10n.string("Pico could not read the list of hosts this iPhone registered on. It kept a copy, and Send to This iPhone registers a host again.")
     }
 
     static func refreshOnLaunch() {
@@ -182,8 +209,17 @@ extension PushRegistration.Dependencies {
             return try JSONDecoder().decode([String: PushRegistrationRecord].self, from: data)
         } catch {
             logger.error("[PicoPush] registration records unreadable: \(error)")
+            keepUnreadableRecords(data)
             return [:]
         }
+    }
+
+    /// The next registration overwrites the blob, so the bytes are kept under their own key: without them
+    /// every other host would silently drop out of the token-change refresh.
+    private static func keepUnreadableRecords(_ data: Data) {
+        let key = PushRegistration.unreadableRecordsKeyPrefix + ISO8601DateFormatter().string(from: Date())
+        UserDefaults.standard.set(data, forKey: key)
+        logger.info("[PicoPush] kept the unreadable registration records as \(key)")
     }
 
     static func live(services: RemoteServices) throws -> Self {
@@ -197,7 +233,7 @@ extension PushRegistration.Dependencies {
             },
             deviceToken: { try await PushTokenBroker.shared.requestToken() },
             topic: Bundle.main.bundleIdentifier ?? "",
-            environment: ProvisioningProfile.apsEnvironment(profile: profile),
+            environment: try ProvisioningProfile.apsEnvironment(profile: profile),
             register: { host, token, topic, environment in
                 try await client.registerAPNs(host: host, deviceToken: token, topic: topic, environment: environment)
             },

@@ -5312,6 +5312,119 @@
         }
       }
     },
+    "For a Pico built with your own paid Apple team. On %@, turn on [apns] in ~/.minis/hostd/config.toml with your APNs key in place of [bark], then tap Send to This iPhone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für ein Pico, das mit deinem eigenen bezahlten Apple-Team gebaut wurde. Aktiviere auf %@ [apns] in ~/.minis/hostd/config.toml mit deinem APNs-Schlüssel anstelle von [bark] und tippe dann auf An dieses iPhone senden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For a Pico built with your own paid Apple team. On %@, turn on [apns] in ~/.minis/hostd/config.toml with your APNs key in place of [bark], then tap Send to This iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para un Pico compilado con tu propio equipo de Apple de pago. En %@, activa [apns] en ~/.minis/hostd/config.toml con tu clave de APNs en lugar de [bark] y luego toca Enviar a este iPhone."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para sa Pico na binuild gamit ang sarili mong bayad na Apple team. Sa %@, i-on ang [apns] sa ~/.minis/hostd/config.toml kasama ang APNs key mo kapalit ng [bark], pagkatapos ay i-tap ang Ipadala sa iPhone na Ito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour un Pico compilé avec votre propre équipe Apple payante. Sur %@, activez [apns] dans ~/.minis/hostd/config.toml avec votre clé APNs à la place de [bark], puis touchez Envoyer à cet iPhone."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Za Pico izgrađen s vlastitim plaćenim Apple timom. Na %@ uključite [apns] u ~/.minis/hostd/config.toml sa svojim APNs ključem umjesto [bark], zatim dodirnite Pošalji na ovaj iPhone."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untuk Pico yang dibangun dengan tim Apple berbayar Anda sendiri. Di %@, aktifkan [apns] di ~/.minis/hostd/config.toml dengan kunci APNs Anda menggantikan [bark], lalu ketuk Kirim ke iPhone Ini."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自分の有料 Apple チームでビルドした Pico 用です。%@ で ~/.minis/hostd/config.toml の [bark] の代わりに APNs キーとともに [apns] を有効にし、「このiPhoneに送信」をタップしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "직접 결제한 Apple 팀으로 빌드한 Pico용입니다. %@에서 ~/.minis/hostd/config.toml의 [bark] 대신 APNs 키와 함께 [apns]를 켠 다음 이 iPhone으로 보내기를 탭하세요."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untuk Pico yang dibina dengan pasukan Apple berbayar anda sendiri. Pada %@, hidupkan [apns] dalam ~/.minis/hostd/config.toml dengan kunci APNs anda menggantikan [bark], kemudian ketik Hantar ke iPhone Ini."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dla Pico zbudowanego z własnym płatnym zespołem Apple. Na %@ włącz [apns] w ~/.minis/hostd/config.toml z kluczem APNs zamiast [bark], a następnie stuknij Wyślij na ten iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para um Pico compilado com sua própria equipe Apple paga. Em %@, ative [apns] em ~/.minis/hostd/config.toml com sua chave de APNs no lugar de [bark] e toque em Enviar para este iPhone."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pentru un Pico construit cu propria echipă Apple plătită. Pe %@, activați [apns] în ~/.minis/hostd/config.toml cu cheia APNs în locul lui [bark], apoi atingeți Trimite pe acest iPhone."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для Pico, собранного вашей собственной платной командой Apple. На %@ включите [apns] в ~/.minis/hostd/config.toml со своим ключом APNs вместо [bark], затем нажмите «Отправить на этот iPhone»."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สำหรับ Pico ที่สร้างด้วยทีม Apple แบบชำระเงินของคุณเอง บน %@ ให้เปิด [apns] ใน ~/.minis/hostd/config.toml โดยใช้คีย์ APNs แทน [bark] แล้วแตะส่งไปยัง iPhone เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kendi ücretli Apple ekibinizle derlenen Pico içindir. %@ üzerinde ~/.minis/hostd/config.toml dosyasında [bark] yerine APNs anahtarınızla [apns] bölümünü açın, ardından Bu iPhone'a Gönder'e dokunun."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "适用于用你自己的付费 Apple 团队构建的 Pico。在 %@ 上，用你的 APNs 密钥代替 [bark] 开启 ~/.minis/hostd/config.toml 中的 [apns]，然后轻点“发送到此 iPhone”。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "適用於以你自己的付費 Apple 團隊建置的 Pico。在 %@ 上，用你的 APNs 金鑰取代 [bark] 開啟 ~/.minis/hostd/config.toml 中的 [apns]，然後點一下「傳送到這部 iPhone」。"
+          }
+        }
+      }
+    },
     "Generate New Key" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8363,6 +8476,119 @@
         }
       }
     },
+    "Notices from %@ come to this iPhone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen von %@ kommen auf dieses iPhone."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notices from %@ come to this iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los avisos de %@ llegan a este iPhone."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dumarating sa iPhone na ito ang mga abiso mula sa %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notifications de %@ arrivent sur cet iPhone."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obavijesti s %@ dolaze na ovaj iPhone."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifikasi dari %@ datang ke iPhone ini."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ からの通知はこのiPhoneに届きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@의 알림이 이 iPhone으로 옵니다."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notis daripada %@ datang ke iPhone ini."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Powiadomienia z %@ trafiają na ten iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os avisos de %@ chegam a este iPhone."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notificările de la %@ ajung pe acest iPhone."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уведомления от %@ приходят на этот iPhone."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การแจ้งเตือนจาก %@ จะมาที่ iPhone เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ bildirimleri bu iPhone'a gelir."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 的通知会送到此 iPhone。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 的通知會送到這部 iPhone。"
+          }
+        }
+      }
+    },
     "Notifications" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8472,6 +8698,119 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通知"
+          }
+        }
+      }
+    },
+    "Notifications are off for Pico. Turn them on in the iOS Settings app → Pico → Notifications, then try again." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen sind für Pico aus. Schalte sie in der iOS-Einstellungen-App unter Pico → Mitteilungen ein und versuche es dann erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications are off for Pico. Turn them on in the iOS Settings app → Pico → Notifications, then try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los avisos están desactivados para Pico. Actívalos en la app Ajustes de iOS → Pico → Notificaciones y vuelve a intentarlo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naka-off ang mga abiso para sa Pico. I-on ito sa iOS Settings app → Pico → Notifications, pagkatapos ay subukan muli."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notifications sont désactivées pour Pico. Activez-les dans l’app Réglages d’iOS → Pico → Notifications, puis réessayez."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obavijesti su isključene za Pico. Uključite ih u iOS aplikaciji Postavke → Pico → Obavijesti, pa pokušajte ponovno."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifikasi untuk Pico dimatikan. Aktifkan di app Pengaturan iOS → Pico → Notifikasi, lalu coba lagi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico の通知がオフになっています。iOS の「設定」アプリ → Pico →「通知」でオンにしてから、もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 알림이 꺼져 있습니다. iOS 설정 앱 → Pico → 알림에서 켠 다음 다시 시도하세요."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notis untuk Pico dimatikan. Hidupkannya dalam app Tetapan iOS → Pico → Notis, kemudian cuba lagi."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Powiadomienia Pico są wyłączone. Włącz je w aplikacji Ustawienia iOS → Pico → Powiadomienia i spróbuj ponownie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os avisos estão desativados para o Pico. Ative-os no app Ajustes do iOS → Pico → Notificações e tente de novo."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notificările sunt oprite pentru Pico. Activați-le în app Setări iOS → Pico → Notificări, apoi încercați din nou."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уведомления для Pico выключены. Включите их в приложении «Настройки» iOS → Pico → «Уведомления» и повторите попытку."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การแจ้งเตือนของ Pico ถูกปิดอยู่ เปิดในการตั้งค่า iOS → Pico → การแจ้งเตือน แล้วลองอีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico bildirimleri kapalı. iOS Ayarlar uygulaması → Pico → Bildirimler bölümünden açıp yeniden deneyin."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 的通知已关闭。请在 iOS“设置”App → Pico →“通知”中开启，然后重试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 的通知已關閉。請在 iOS「設定」App → Pico →「通知」中開啟，然後再試一次。"
           }
         }
       }
@@ -9489,6 +9828,345 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請貼上或選擇要匯入的 OpenSSH Ed25519 私密金鑰。"
+          }
+        }
+      }
+    },
+    "Pico could not read the list of hosts this iPhone registered on. It kept a copy, and Send to This iPhone registers a host again." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico konnte die Liste der Hosts, auf denen dieses iPhone registriert ist, nicht lesen. Sie wurde als Kopie behalten; An dieses iPhone senden registriert einen Host erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico could not read the list of hosts this iPhone registered on. It kept a copy, and Send to This iPhone registers a host again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico no pudo leer la lista de hosts en los que este iPhone está registrado. Se guardó una copia; Enviar a este iPhone vuelve a registrar un host."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi mabasa ng Pico ang listahan ng host kung saan nakarehistro ang iPhone na ito. Nagtabi ito ng kopya, at muling ire-register ng Ipadala sa iPhone na Ito ang isang host."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico n’a pas pu lire la liste des hôtes sur lesquels cet iPhone est enregistré. Une copie a été conservée ; Envoyer à cet iPhone réenregistre un hôte."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico nije mogao pročitati popis hostova na kojima je ovaj iPhone registriran. Kopija je sačuvana, a Pošalji na ovaj iPhone ponovno registrira host."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico tidak bisa membaca daftar host tempat iPhone ini terdaftar. Salinannya disimpan, dan Kirim ke iPhone Ini mendaftarkan host lagi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このiPhoneが登録されているホストの一覧を Pico が読めませんでした。コピーを保存しました。「このiPhoneに送信」でホストを再登録できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico가 이 iPhone이 등록된 호스트 목록을 읽지 못했습니다. 사본을 보관했으며, 이 iPhone으로 보내기가 호스트를 다시 등록합니다."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico tidak dapat membaca senarai host tempat iPhone ini didaftarkan. Salinannya disimpan, dan Hantar ke iPhone Ini mendaftarkan host semula."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico nie mógł odczytać listy hostów, na których zarejestrowano ten iPhone. Kopia została zachowana, a Wyślij na ten iPhone zarejestruje host ponownie."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Pico não conseguiu ler a lista de hosts em que este iPhone está registrado. Uma cópia foi mantida, e Enviar para este iPhone registra um host de novo."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico nu a putut citi lista de hosturi pe care este înregistrat acest iPhone. O copie a fost păstrată, iar Trimite pe acest iPhone înregistrează din nou un host."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico не смог прочитать список хостов, на которых зарегистрирован этот iPhone. Копия сохранена; «Отправить на этот iPhone» зарегистрирует хост заново."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico อ่านรายการ host ที่ iPhone เครื่องนี้ลงทะเบียนไว้ไม่ได้ ระบบเก็บสำเนาไว้แล้ว และส่งไปยัง iPhone เครื่องนี้จะลงทะเบียน host อีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico bu iPhone'un kayıtlı olduğu host listesini okuyamadı. Bir kopya saklandı; Bu iPhone'a Gönder bir hostu yeniden kaydeder."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 无法读取此 iPhone 注册过的 Host 列表。已保留一份副本，轻点“发送到此 iPhone”即可重新注册 Host。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 無法讀取這部 iPhone 註冊過的 Host 清單。已保留一份副本，點「傳送到這部 iPhone」即可重新註冊 Host。"
+          }
+        }
+      }
+    },
+    "Pico could not read this build's provisioning profile, so it cannot tell whether to use the APNs sandbox. Rebuild the app with ios-personal-device.sh." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico konnte das Provisioning-Profil dieses Builds nicht lesen und weiß daher nicht, ob die APNs-Sandbox zu verwenden ist. Baue die App mit ios-personal-device.sh neu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico could not read this build's provisioning profile, so it cannot tell whether to use the APNs sandbox. Rebuild the app with ios-personal-device.sh."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico no pudo leer el perfil de aprovisionamiento de esta compilación, así que no sabe si usar el entorno de pruebas de APNs. Vuelve a compilar la app con ios-personal-device.sh."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi mabasa ng Pico ang provisioning profile ng build na ito, kaya hindi nito alam kung APNs sandbox ang gagamitin. I-rebuild ang app gamit ang ios-personal-device.sh."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico n’a pas pu lire le profil de provisionnement de cette compilation et ne sait donc pas s’il faut utiliser le bac à sable APNs. Recompilez l’app avec ios-personal-device.sh."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico nije mogao pročitati provisioning profil ove gradnje pa ne zna treba li koristiti APNs sandbox. Ponovno izgradite app s ios-personal-device.sh."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico tidak bisa membaca profil provisioning build ini, jadi tidak tahu apakah harus memakai sandbox APNs. Build ulang app dengan ios-personal-device.sh."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このビルドのプロビジョニングプロファイルを Pico が読めなかったため、APNs サンドボックスを使うべきか判断できません。ios-personal-device.sh でアプリを再ビルドしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico가 이 빌드의 프로비저닝 프로파일을 읽지 못해 APNs 샌드박스를 쓸지 알 수 없습니다. ios-personal-device.sh로 앱을 다시 빌드하세요."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico tidak dapat membaca profil provisioning build ini, jadi ia tidak tahu sama ada perlu guna sandbox APNs. Bina semula app dengan ios-personal-device.sh."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico nie mógł odczytać profilu provisioningu tej kompilacji, więc nie wie, czy użyć piaskownicy APNs. Zbuduj aplikację ponownie za pomocą ios-personal-device.sh."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Pico não conseguiu ler o perfil de provisionamento desta compilação, então não sabe se deve usar o sandbox de APNs. Recompile o app com ios-personal-device.sh."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico nu a putut citi profilul de provisionare al acestei compilări, deci nu știe dacă să folosească sandbox-ul APNs. Recompilați app-ul cu ios-personal-device.sh."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico не смог прочитать профиль подготовки этой сборки и не знает, использовать ли песочницу APNs. Пересоберите приложение с ios-personal-device.sh."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico อ่าน provisioning profile ของบิลด์นี้ไม่ได้ จึงไม่รู้ว่าต้องใช้ APNs sandbox หรือไม่ ให้สร้างแอปใหม่ด้วย ios-personal-device.sh"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico bu derlemenin sağlama profilini okuyamadı, bu yüzden APNs korumalı alanını kullanıp kullanmayacağını bilemiyor. Uygulamayı ios-personal-device.sh ile yeniden derleyin."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 无法读取此构建的配置文件，因此不知道该用 APNs 沙盒。请用 ios-personal-device.sh 重新构建 App。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 無法讀取這個建置的佈建設定檔，因此不知道是否該使用 APNs 沙箱。請用 ios-personal-device.sh 重新建置 App。"
+          }
+        }
+      }
+    },
+    "Pico Notifications" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico-Mitteilungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico Notifications"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisos de Pico"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mga Abiso ng Pico"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications Pico"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico obavijesti"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifikasi Pico"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico の通知"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 알림"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notis Pico"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Powiadomienia Pico"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisos do Pico"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notificări Pico"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уведомления Pico"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การแจ้งเตือน Pico"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico Bildirimleri"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 通知"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 通知"
           }
         }
       }
@@ -12544,6 +13222,119 @@
         }
       }
     },
+    "Saving the notification key failed (keychain %@, status %d)." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speichern des Mitteilungsschlüssels fehlgeschlagen (Keychain %@, Status %d)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saving the notification key failed (keychain %@, status %d)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo guardar la clave de avisos (llavero %@, estado %d)."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nabigo ang pag-save ng notification key (keychain %@, status %d)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’enregistrement de la clé de notification a échoué (trousseau %@, état %d)."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spremanje ključa obavijesti nije uspjelo (keychain %@, status %d)."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagal menyimpan kunci notifikasi (keychain %@, status %d)."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知キーを保存できませんでした（キーチェーン %@、ステータス %d）。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 키를 저장하지 못했습니다(키체인 %@, 상태 %d)."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagal menyimpan kunci notis (keychain %@, status %d)."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapisanie klucza powiadomień nie powiodło się (pęk kluczy %@, status %d)."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível salvar a chave de avisos (chaveiro %@, status %d)."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvarea cheii de notificări a eșuat (keychain %@, status %d)."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось сохранить ключ уведомлений (связка ключей %@, статус %d)."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บันทึกคีย์การแจ้งเตือนไม่สำเร็จ (keychain %@, สถานะ %d)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirim anahtarı kaydedilemedi (anahtar zinciri %@, durum %d)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "储存通知密钥失败（钥匙串 %@，状态 %d）。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "儲存通知金鑰失敗（鑰匙圈 %@，狀態 %d）。"
+          }
+        }
+      }
+    },
     "Scan Again" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -13105,6 +13896,119 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "傳送"
+          }
+        }
+      }
+    },
+    "Send to This iPhone" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An dieses iPhone senden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send to This iPhone"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar a este iPhone"
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipadala sa iPhone na Ito"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer à cet iPhone"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pošalji na ovaj iPhone"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kirim ke iPhone Ini"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このiPhoneに送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 iPhone으로 보내기"
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hantar ke iPhone Ini"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyślij na ten iPhone"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar para este iPhone"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trimite pe acest iPhone"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить на этот iPhone"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ส่งไปยัง iPhone เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu iPhone'a Gönder"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送到此 iPhone"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "傳送到這部 iPhone"
           }
         }
       }
@@ -15934,6 +16838,119 @@
         }
       }
     },
+    "This build has no keychain group for notification keys (PicoPushKeychainGroup in Info.plist). Build it with a development team." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesem Build fehlt die Keychain-Gruppe für Mitteilungsschlüssel (PicoPushKeychainGroup in Info.plist). Baue ihn mit einem Entwicklungsteam."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This build has no keychain group for notification keys (PicoPushKeychainGroup in Info.plist). Build it with a development team."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta compilación no tiene grupo de llavero para las claves de avisos (PicoPushKeychainGroup en Info.plist). Compílala con un equipo de desarrollo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Walang keychain group ang build na ito para sa mga notification key (PicoPushKeychainGroup sa Info.plist). I-build ito gamit ang development team."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette compilation n’a pas de groupe de trousseau pour les clés de notification (PicoPushKeychainGroup dans Info.plist). Compilez-la avec une équipe de développement."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ova gradnja nema keychain grupu za ključeve obavijesti (PicoPushKeychainGroup u Info.plist). Izgradite je s razvojnim timom."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Build ini tidak punya grup keychain untuk kunci notifikasi (PicoPushKeychainGroup di Info.plist). Build dengan tim pengembang."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このビルドには通知キー用のキーチェーングループ（Info.plist の PicoPushKeychainGroup）がありません。開発チームでビルドしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 빌드에는 알림 키용 키체인 그룹(Info.plist의 PicoPushKeychainGroup)이 없습니다. 개발 팀으로 빌드하세요."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Build ini tiada kumpulan keychain untuk kunci notis (PicoPushKeychainGroup dalam Info.plist). Bina dengan pasukan pembangun."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta kompilacja nie ma grupy pęku kluczy dla kluczy powiadomień (PicoPushKeychainGroup w Info.plist). Zbuduj ją z zespołem deweloperskim."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta compilação não tem grupo de chaveiro para as chaves de avisos (PicoPushKeychainGroup no Info.plist). Compile com uma equipe de desenvolvimento."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Această compilare nu are un grup keychain pentru cheile de notificări (PicoPushKeychainGroup în Info.plist). Compilați-o cu o echipă de dezvoltare."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В этой сборке нет группы связки ключей для ключей уведомлений (PicoPushKeychainGroup в Info.plist). Соберите её с командой разработчика."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บิลด์นี้ไม่มี keychain group สำหรับคีย์การแจ้งเตือน (PicoPushKeychainGroup ใน Info.plist) ให้สร้างด้วยทีมพัฒนา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu derlemede bildirim anahtarları için anahtar zinciri grubu yok (Info.plist içindeki PicoPushKeychainGroup). Bir geliştirici ekibiyle derleyin."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此构建没有用于通知密钥的钥匙串群组（Info.plist 中的 PicoPushKeychainGroup）。请用开发团队构建。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這個建置沒有用於通知金鑰的鑰匙圈群組（Info.plist 中的 PicoPushKeychainGroup）。請用開發團隊建置。"
+          }
+        }
+      }
+    },
     "This chat was opened from a mail or GitHub notification on your host. Its content is untrusted, so shell, file writes, the browser and memory writes are off." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -16612,6 +17629,119 @@
         }
       }
     },
+    "This iPhone is registered. Run minis-hostd doctor --push-test on %@ to try it." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses iPhone ist registriert. Führe auf %@ minis-hostd doctor --push-test aus, um es zu testen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This iPhone is registered. Run minis-hostd doctor --push-test on %@ to try it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este iPhone está registrado. Ejecuta minis-hostd doctor --push-test en %@ para probarlo."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakarehistro na ang iPhone na ito. Patakbuhin ang minis-hostd doctor --push-test sa %@ para subukan ito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cet iPhone est enregistré. Lancez minis-hostd doctor --push-test sur %@ pour l’essayer."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ovaj iPhone je registriran. Pokrenite minis-hostd doctor --push-test na %@ da biste ga isprobali."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone ini sudah terdaftar. Jalankan minis-hostd doctor --push-test di %@ untuk mencobanya."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このiPhoneは登録済みです。%@ で minis-hostd doctor --push-test を実行すると試せます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 iPhone이 등록되었습니다. %@에서 minis-hostd doctor --push-test를 실행해 확인하세요."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone ini telah didaftarkan. Jalankan minis-hostd doctor --push-test pada %@ untuk mencubanya."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ten iPhone jest zarejestrowany. Uruchom minis-hostd doctor --push-test na %@, aby go przetestować."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este iPhone está registrado. Execute minis-hostd doctor --push-test em %@ para testar."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acest iPhone este înregistrat. Rulați minis-hostd doctor --push-test pe %@ pentru a-l încerca."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот iPhone зарегистрирован. Запустите minis-hostd doctor --push-test на %@, чтобы проверить."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone เครื่องนี้ลงทะเบียนแล้ว รัน minis-hostd doctor --push-test บน %@ เพื่อทดลอง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu iPhone kayıtlı. Denemek için %@ üzerinde minis-hostd doctor --push-test komutunu çalıştırın."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 iPhone 已注册。在 %@ 上运行 minis-hostd doctor --push-test 即可测试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這部 iPhone 已註冊。在 %@ 上執行 minis-hostd doctor --push-test 即可測試。"
+          }
+        }
+      }
+    },
     "This is not a Minis pairing code. Run minis-hostd pair on the computer and scan the code it prints." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -16834,6 +17964,119 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此金鑰的密碼短語加密使用的 bcrypt 回合數超過 Minis 能讀取的上限（目前的 ssh-keygen 使用 24 回合，上限為 17 回合）。請以較少的回合數重新加密一份副本（ssh-keygen -p -a 16 -f <金鑰副本>），然後再次匯入。"
+          }
+        }
+      }
+    },
+    "This minis-hostd is too old for Pico notifications. Update it to %@ or later." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses minis-hostd ist zu alt für Pico-Mitteilungen. Aktualisiere es auf %@ oder neuer."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This minis-hostd is too old for Pico notifications. Update it to %@ or later."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este minis-hostd es demasiado antiguo para los avisos de Pico. Actualízalo a %@ o posterior."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masyadong luma ang minis-hostd na ito para sa mga abiso ng Pico. I-update ito sa %@ o mas bago."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce minis-hostd est trop ancien pour les notifications Pico. Mettez-le à jour vers %@ ou plus récent."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ovaj minis-hostd je prestar za Pico obavijesti. Ažurirajte ga na %@ ili noviji."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd ini terlalu lama untuk notifikasi Pico. Perbarui ke %@ atau lebih baru."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この minis-hostd は Pico の通知には古すぎます。%@ 以降に更新してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 minis-hostd는 Pico 알림을 지원하기에 너무 오래되었습니다. %@ 이상으로 업데이트하세요."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd ini terlalu lama untuk notis Pico. Kemas kini kepada %@ atau lebih baharu."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ten minis-hostd jest zbyt stary dla powiadomień Pico. Zaktualizuj go do %@ lub nowszego."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este minis-hostd é antigo demais para os avisos do Pico. Atualize para %@ ou mais recente."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acest minis-hostd este prea vechi pentru notificările Pico. Actualizați-l la %@ sau mai nou."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот minis-hostd слишком старый для уведомлений Pico. Обновите его до %@ или новее."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd นี้เก่าเกินไปสำหรับการแจ้งเตือน Pico อัปเดตเป็น %@ หรือใหม่กว่า"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu minis-hostd, Pico bildirimleri için çok eski. %@ veya daha yenisine güncelleyin."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 minis-hostd 版本太旧，无法使用 Pico 通知。请更新到 %@ 或更高版本。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這個 minis-hostd 版本太舊，無法使用 Pico 通知。請更新到 %@ 或更新版本。"
           }
         }
       }
@@ -17629,6 +18872,119 @@
         }
       }
     },
+    "Using Pico Notifications? Put the [apns] section in place of [bark] and point it at your APNs key." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du nutzt Pico-Mitteilungen? Ersetze [bark] durch [apns] und verweise darin auf deinen APNs-Schlüssel."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Using Pico Notifications? Put the [apns] section in place of [bark] and point it at your APNs key."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Usas los avisos de Pico? Sustituye [bark] por [apns] y apunta a tu clave de APNs."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ginagamit ang mga Abiso ng Pico? Palitan ang [bark] ng [apns] at ituro ito sa APNs key mo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous utilisez les notifications Pico ? Remplacez [bark] par [apns] et pointez vers votre clé APNs."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koristite Pico obavijesti? Zamijenite [bark] s [apns] i pokažite na svoj APNs ključ."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memakai Notifikasi Pico? Ganti [bark] dengan [apns] dan arahkan ke kunci APNs Anda."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico の通知を使いますか？[bark] の代わりに [apns] を置き、APNs キーを指定してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico 알림을 사용하시나요? [bark] 대신 [apns]를 두고 APNs 키를 지정하세요."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guna Notis Pico? Gantikan [bark] dengan [apns] dan halakan kepada kunci APNs anda."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Używasz powiadomień Pico? Zastąp [bark] sekcją [apns] i wskaż swój klucz APNs."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa os avisos do Pico? Troque [bark] por [apns] e aponte para sua chave de APNs."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folosiți notificările Pico? Înlocuiți [bark] cu [apns] și indicați cheia APNs."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Используете уведомления Pico? Замените [bark] на [apns] и укажите свой ключ APNs."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใช้การแจ้งเตือน Pico อยู่หรือไม่? ให้แทน [bark] ด้วย [apns] และชี้ไปที่คีย์ APNs ของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico Bildirimleri mi kullanıyorsunuz? [bark] yerine [apns] bölümünü koyup APNs anahtarınızı gösterin."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 Pico 通知吗？请用 [apns] 代替 [bark]，并指向你的 APNs 密钥。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 Pico 通知嗎？請以 [apns] 取代 [bark]，並指向你的 APNs 金鑰。"
+          }
+        }
+      }
+    },
     "View" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -18307,6 +19663,119 @@
         }
       }
     },
+    "iOS did not give Pico a push token (%@). This build may lack the push entitlement: build it with ios-personal-device.sh --keep-push." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS hat Pico kein Push-Token gegeben (%@). Diesem Build fehlt vermutlich die Push-Berechtigung: baue ihn mit ios-personal-device.sh --keep-push."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS did not give Pico a push token (%@). This build may lack the push entitlement: build it with ios-personal-device.sh --keep-push."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS no le dio a Pico un token push (%@). Puede que a esta compilación le falte el permiso de push: compílala con ios-personal-device.sh --keep-push."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hindi binigyan ng iOS ang Pico ng push token (%@). Maaaring walang push entitlement ang build na ito: i-build ito gamit ang ios-personal-device.sh --keep-push."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS n’a pas donné de jeton push à Pico (%@). Cette compilation manque peut-être de l’autorisation push : compilez-la avec ios-personal-device.sh --keep-push."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS nije dao Pico push token (%@). Ovoj se gradnji možda nedostaje push ovlaštenje: izgradite je s ios-personal-device.sh --keep-push."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS tidak memberi Pico token push (%@). Build ini mungkin tidak punya entitlement push: build dengan ios-personal-device.sh --keep-push."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS が Pico にプッシュトークンを渡しませんでした（%@）。このビルドにプッシュの権利がない可能性があります。ios-personal-device.sh --keep-push でビルドしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS가 Pico에 푸시 토큰을 주지 않았습니다(%@). 이 빌드에 푸시 권한이 없을 수 있습니다. ios-personal-device.sh --keep-push로 빌드하세요."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS tidak memberikan Pico token push (%@). Build ini mungkin tiada kelayakan push: bina dengan ios-personal-device.sh --keep-push."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS nie przekazał Pico tokena push (%@). Tej kompilacji może brakować uprawnienia push: zbuduj ją z ios-personal-device.sh --keep-push."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O iOS não deu ao Pico um token push (%@). Esta compilação pode não ter o direito de push: compile com ios-personal-device.sh --keep-push."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS nu i-a dat Pico un token push (%@). Această compilare poate să nu aibă dreptul de push: compilați-o cu ios-personal-device.sh --keep-push."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS не выдал Pico push-токен (%@). Возможно, в этой сборке нет права на push: соберите её с ios-personal-device.sh --keep-push."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS ไม่ได้ให้ push token แก่ Pico (%@) บิลด์นี้อาจไม่มีสิทธิ์ push: ให้สร้างด้วย ios-personal-device.sh --keep-push"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS, Pico'ya push token vermedi (%@). Bu derlemede push yetkisi olmayabilir: ios-personal-device.sh --keep-push ile derleyin."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 没有给 Pico 推送令牌（%@）。此构建可能缺少推送权利：请用 ios-personal-device.sh --keep-push 重新构建。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 沒有給 Pico 推播權杖（%@）。這個建置可能沒有推播權利：請用 ios-personal-device.sh --keep-push 重新建置。"
+          }
+        }
+      }
+    },
     "minis-hostd is not installed on %@." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -18416,6 +19885,119 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ 上未安裝 minis-hostd。"
+          }
+        }
+      }
+    },
+    "minis-hostd on %@ returned a push key Pico could not read. Update minis-hostd on %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd auf %@ hat einen Push-Schlüssel zurückgegeben, den Pico nicht lesen konnte. Aktualisiere minis-hostd auf %@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd on %@ returned a push key Pico could not read. Update minis-hostd on %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd en %@ devolvió una clave push que Pico no pudo leer. Actualiza minis-hostd en %@."
+          }
+        },
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nagbalik ang minis-hostd sa %@ ng push key na hindi mabasa ng Pico. I-update ang minis-hostd sa %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd sur %@ a renvoyé une clé push que Pico n’a pas pu lire. Mettez à jour minis-hostd sur %@."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd na %@ vratio je push ključ koji Pico nije mogao pročitati. Ažurirajte minis-hostd na %@."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd di %@ mengembalikan kunci push yang tidak bisa dibaca Pico. Perbarui minis-hostd di %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ の minis-hostd が Pico で読めないプッシュキーを返しました。%@ の minis-hostd を更新してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@의 minis-hostd가 Pico가 읽을 수 없는 푸시 키를 반환했습니다. %@의 minis-hostd를 업데이트하세요."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd pada %@ memulangkan kunci push yang tidak dapat dibaca Pico. Kemas kini minis-hostd pada %@."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd na %@ zwrócił klucz push, którego Pico nie mógł odczytać. Zaktualizuj minis-hostd na %@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O minis-hostd em %@ devolveu uma chave push que o Pico não conseguiu ler. Atualize o minis-hostd em %@."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd de pe %@ a returnat o cheie push pe care Pico nu a putut-o citi. Actualizați minis-hostd pe %@."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd на %@ вернул push-ключ, который Pico не смог прочитать. Обновите minis-hostd на %@."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minis-hostd บน %@ ส่งคีย์ push ที่ Pico อ่านไม่ได้ ไปอัปเดต minis-hostd บน %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ üzerindeki minis-hostd, Pico'nun okuyamadığı bir push anahtarı döndürdü. %@ üzerindeki minis-hostd'u güncelleyin."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 上的 minis-hostd 返回了 Pico 无法读取的推送密钥。请更新 %@ 上的 minis-hostd。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 上的 minis-hostd 傳回了 Pico 無法讀取的推播金鑰。請更新 %@ 上的 minis-hostd。"
           }
         }
       }

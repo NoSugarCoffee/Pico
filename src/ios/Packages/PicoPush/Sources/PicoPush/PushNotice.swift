@@ -75,6 +75,10 @@ public enum PushCrypto {
     public static func failureBody(host: String) -> String {
         "Pico could not decrypt this notice. Open Settings → Remote Hosts → \(host) → Notifications and tap Send to This iPhone."
     }
+
+    /// Shown when the failure has no host to name, such as a keychain the extension cannot reach.
+    public static let unopenableBody =
+        "Pico could not open this notice. Open Settings → Remote Hosts → your host → Notifications and tap Send to This iPhone."
 }
 
 /// Where the extension leaves the decrypted link for the app's tap handler.

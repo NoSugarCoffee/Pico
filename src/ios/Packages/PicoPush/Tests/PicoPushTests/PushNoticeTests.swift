@@ -88,8 +88,17 @@ final class PushNoticeTests: XCTestCase {
             """
             return Data([0x30, 0x82, 0x01]) + Data(plist.utf8) + Data([0xA0, 0x00])
         }
-        XCTAssertEqual(ProvisioningProfile.apsEnvironment(profile: profile("development")), .development)
-        XCTAssertEqual(ProvisioningProfile.apsEnvironment(profile: profile("production")), .production)
-        XCTAssertEqual(ProvisioningProfile.apsEnvironment(profile: nil), .production)
+        XCTAssertEqual(try ProvisioningProfile.apsEnvironment(profile: profile("development")), .development)
+        XCTAssertEqual(try ProvisioningProfile.apsEnvironment(profile: profile("production")), .production)
+        XCTAssertEqual(try ProvisioningProfile.apsEnvironment(profile: nil), .production)
+    }
+
+    func testAnUnreadableProfileThrowsInsteadOfClaimingProduction() {
+        XCTAssertThrowsError(try ProvisioningProfile.apsEnvironment(profile: Data("not a profile".utf8))) {
+            XCTAssertEqual($0 as? ProvisioningProfileError, .unreadable)
+        }
+        XCTAssertThrowsError(try ProvisioningProfile.apsEnvironment(profile: Data())) {
+            XCTAssertEqual($0 as? ProvisioningProfileError, .unreadable)
+        }
     }
 }

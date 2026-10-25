@@ -25,22 +25,24 @@ final class NotificationService: UNNotificationServiceExtension {
     }
 
     private static func opened(_ content: UNMutableNotificationContent) -> UNNotificationContent {
-        var userInfo = content.userInfo
-        userInfo["pico"] = nil
         do {
             let keys = try KeychainPushKeyStore(bundle: .main)
             let notice = try PushNoticeOpener.open(userInfo: content.userInfo, keys: keys)
             content.title = notice.title
             content.body = notice.body
+            var userInfo = content.userInfo
             userInfo[PushUserInfo.urlKey] = notice.url
+            userInfo["pico"] = nil
+            content.userInfo = userInfo
         } catch PushOpenError.notAPicoNotice {
             return content
         } catch let PushOpenError.noKey(host), let PushOpenError.undecryptable(host) {
+            // The envelope stays, so the tap opens it again once the phone has a key that works.
             content.body = PushCrypto.failureBody(host: host)
         } catch {
-            content.body = "Pico could not open this notice (\(error))."
+            NSLog("[PicoPush] the notice could not be opened: %@", String(describing: error))
+            content.body = PushCrypto.unopenableBody
         }
-        content.userInfo = userInfo
         return content
     }
 }
