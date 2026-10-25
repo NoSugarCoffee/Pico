@@ -122,7 +122,7 @@ enum PushRegistration {
 
     /// A launch refresh and Send to This iPhone can aim at the same host; hostd keeps one pending key, so
     /// the second run would replace the first one's key and fail to activate. Both wait on the same run instead.
-    private static var inFlight: [String: Task<Void, Error>] = [:]
+    private static var inFlight: [String: (id: UUID, task: Task<Void, Error>)] = [:]
     /// Bumped when a host is removed, so a registration already talking to hostd cannot save a record for it.
     private static var generations: [String: Int] = [:]
 
@@ -132,12 +132,14 @@ enum PushRegistration {
 
     static func register(host: String, using deps: Dependencies) async throws {
         if let running = inFlight[host] {
-            return try await running.value
+            return try await running.task.value
         }
         let generation = generations[host, default: 0]
+        let id = UUID()
         let running = Task { try await performRegister(host: host, generation: generation, using: deps) }
-        inFlight[host] = running
-        defer { inFlight[host] = nil }
+        inFlight[host] = (id: id, task: running)
+        // A run that lost its host must not clear the entry of the run that replaced it.
+        defer { if inFlight[host]?.id == id { inFlight[host] = nil } }
         try await running.value
     }
 
@@ -191,8 +193,7 @@ enum PushRegistration {
 
     /// Hosts this phone registered with, again, when iOS has since given it a different token.
     static func refreshChangedTokens(using deps: Dependencies) async {
-        let records = deps.records()
-        guard !records.isEmpty else { return }
+        guard !deps.records().isEmpty else { return }
         let token: String
         do {
             token = tokenHex(try await deps.deviceToken())
@@ -200,6 +201,8 @@ enum PushRegistration {
             logger.error("[PicoPush] no token on launch: \(error)")
             return
         }
+        // Re-read: a host may have been removed, or another run may have registered it, while iOS answered.
+        let records = deps.records()
         for (host, record) in records.sorted(by: { $0.key < $1.key }) where record.token != token {
             do {
                 try await register(host: host, using: deps)
@@ -259,12 +262,16 @@ enum PushRegistration {
 
     /// A registration that resumed after its host was removed: drop the key it saved and its record.
     private static func discard(host: String, keyID: String, using deps: Dependencies) {
-        do {
-            try deps.deleteKey(host, keyID)
-        } catch {
-            logger.error("[PicoPush] could not delete the key of \(host) after its removal: \(error)")
-        }
         var records = deps.records()
+        let keyIDs = Set((records[host]?.keyIDs ?? []) + [keyID])
+        do {
+            for id in keyIDs {
+                try deps.deleteKey(host, id)
+            }
+        } catch {
+            logger.error("[PicoPush] could not delete the keys of \(host) after its removal: \(error)")
+            return
+        }
         records.removeValue(forKey: host)
         deps.saveRecords(records)
     }
@@ -272,7 +279,7 @@ enum PushRegistration {
     /// A removal bumps the generation, so a registration still awaiting hostd cannot persist afterwards.
     static func invalidate(host: String) {
         generations[host, default: 0] += 1
-        inFlight[host]?.cancel()
+        inFlight[host]?.task.cancel()
         inFlight[host] = nil
     }
 
@@ -286,7 +293,7 @@ enum PushRegistration {
     /// Stops notices for a host the user is removing, before its SSH settings are gone. Best effort: an old
     /// minis-hostd has no `apns unregister`, and the local key is deleted either way.
     static func unregister(host: String, services: RemoteServices) async {
-        if Dependencies.recordsAreReadable(), Dependencies.liveRecords()[host] == nil { return }
+        if Dependencies.registrationStateIsKnown(for: host), Dependencies.liveRecords()[host] == nil { return }
         invalidate(host: host)
         do {
             _ = try await HostEventClient(runner: services.executor).unregisterAPNs(host: host)
@@ -330,6 +337,16 @@ extension PushRegistration.Dependencies {
         } catch {
             logger.error("[PicoPush] saving registration records failed: \(error)")
         }
+    }
+
+    /// False when the records cannot be trusted, because a retained backup means the current blob may be
+    /// missing hosts that were registered before it.
+    static func registrationStateIsKnown(for host: String) -> Bool {
+        let defaults = UserDefaults.standard
+        let hasBackup = defaults.dictionaryRepresentation().keys.contains {
+            $0.hasPrefix(PushRegistration.unreadableRecordsKeyPrefix)
+        }
+        return !hasBackup && recordsAreReadable()
     }
 
     /// False when the blob exists but does not decode, because then no host's state is known.

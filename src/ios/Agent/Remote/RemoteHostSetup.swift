@@ -95,7 +95,16 @@ enum RemoteHostSetup {
     static func updateHost(
         name: String, address: String, port: Int, user: String, services: RemoteServices
     ) async throws {
+        // A new address is likely another machine, which has no APNs registration of its own.
+        let endpointChanged = services.store.hosts.first { $0.name == name }
+            .map { $0.address != address || $0.port != port } ?? false
+        if endpointChanged {
+            await PushRegistration.unregister(host: name, services: services)
+        }
         try services.store.update(name: name, address: address, port: port, user: user)
+        if endpointChanged {
+            PushRegistration.forget(host: name)
+        }
         await services.pool.invalidate(host: name)
         await services.executor.forgetHome(host: name)
     }
