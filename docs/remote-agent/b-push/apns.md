@@ -1,6 +1,6 @@
 # Pico notifications: hostd sends straight to APNs
 
-Status: design, 2026-10-22. Decision D24. Replaces §15's relay design for installs signed by the
+Status: done, 2026-10-25. Decision D24. Replaces §15's relay design for installs signed by the
 user's own paid team; Bark (§7) stays for everyone else.
 
 ## 1. Why there is no relay
