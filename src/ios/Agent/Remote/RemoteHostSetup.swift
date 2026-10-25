@@ -99,11 +99,13 @@ enum RemoteHostSetup {
         let endpointChanged = services.store.hosts.first { $0.name == name }
             .map { $0.address != address || $0.port != port } ?? false
         if endpointChanged {
+            // An edit the store would reject must not already have stopped the old host's notices.
+            try RemoteHostStore.validateConnection(address: address, port: port, user: user)
             await PushRegistration.unregister(host: name, services: services)
         }
         try services.store.update(name: name, address: address, port: port, user: user)
         if endpointChanged {
-            PushRegistration.forget(host: name)
+            PushRegistration.forgetForReplacedHost(host: name)
         }
         await services.pool.invalidate(host: name)
         await services.executor.forgetHome(host: name)

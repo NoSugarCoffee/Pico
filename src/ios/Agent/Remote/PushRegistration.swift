@@ -243,6 +243,15 @@ enum PushRegistration {
     /// A removed host leaves no key behind and no record that would claim its name is still registered.
     /// The record stays when the keychain refuses, so the removal is retried on the next launch.
     static func forget(host: String) {
+        forget(host: host, droppingRecord: false)
+    }
+
+    /// An endpoint edit: the old record no longer describes this host, even when a key could not be deleted.
+    static func forgetForReplacedHost(host: String) {
+        forget(host: host, droppingRecord: true)
+    }
+
+    private static func forget(host: String, droppingRecord: Bool) {
         invalidate(host: host)
         var records = Dependencies.liveRecords()
         guard let record = records[host] else { return }
@@ -253,7 +262,7 @@ enum PushRegistration {
             }
         } catch {
             logger.error("[PicoPush] could not delete the keys of \(host): \(error)")
-            return
+            guard droppingRecord else { return }
         }
         records.removeValue(forKey: host)
         Dependencies.saveLiveRecords(records)
@@ -262,17 +271,23 @@ enum PushRegistration {
 
     /// A registration that resumed after its host was removed: drop the key it saved and its record.
     private static func discard(host: String, keyID: String, using deps: Dependencies) {
-        var records = deps.records()
-        let keyIDs = Set((records[host]?.keyIDs ?? []) + [keyID])
         do {
-            for id in keyIDs {
-                try deps.deleteKey(host, id)
-            }
+            try deps.deleteKey(host, keyID)
         } catch {
-            logger.error("[PicoPush] could not delete the keys of \(host) after its removal: \(error)")
+            logger.error("[PicoPush] could not delete the key of \(host) after its removal: \(error)")
             return
         }
-        records.removeValue(forKey: host)
+        var records = deps.records()
+        guard var record = records[host], record.keyIDs.contains(keyID) else { return }
+        record.keyIDs.removeAll { $0 == keyID }
+        guard let newest = record.keyIDs.last else {
+            records.removeValue(forKey: host)
+            deps.saveRecords(records)
+            return
+        }
+        // A newer run under the same name may have added its key to the staged record; that one stays.
+        if record.keyID == keyID { record.keyID = newest }
+        records[host] = record
         deps.saveRecords(records)
     }
 
