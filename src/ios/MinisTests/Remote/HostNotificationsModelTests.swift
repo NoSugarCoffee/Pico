@@ -28,13 +28,13 @@ final class HostNotificationsModelTests: XCTestCase {
     func testInstallCommandPinsVersionAndScriptURL() {
         XCTAssertEqual(
             HostNotificationsModel.installCommand(hostName: "mini"),
-            "curl -fsSL https://raw.githubusercontent.com/NoSugarCoffee/Pico/main/host/minis-hostd/scripts/install.sh | sh -s -- --host-name 'mini' --version 0.2.1")
-        XCTAssertEqual(HostdRelease.version, "0.2.1")
+            "curl -fsSL https://raw.githubusercontent.com/NoSugarCoffee/Pico/main/host/minis-hostd/scripts/install.sh | sh -s -- --host-name 'mini' --version 0.3.0")
+        XCTAssertEqual(HostdRelease.version, "0.3.0")
     }
 
     func testInstallCommandQuotesHostNameWithQuoteAndSpace() {
         let command = HostNotificationsModel.installCommand(hostName: "bob's mini")
-        XCTAssertTrue(command.contains(#"--host-name 'bob'\''s mini' --version 0.2.1"#), command)
+        XCTAssertTrue(command.contains(#"--host-name 'bob'\''s mini' --version 0.3.0"#), command)
     }
 
     // MARK: Status
