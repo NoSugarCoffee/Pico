@@ -1,8 +1,8 @@
 import Foundation
 
 /// The decisions behind the remote `file_read` and `file_edit` tools, so `RemoteFileService` slices, matches
-/// and words its results like the app's local tools. Ported from `AIChatViewModel+FileTools.swift`
-/// (`executeFileRead`, `executeFileEdit` and their helpers), which stays upstream's own copy;
+/// and words its results like the app's local tools. Ported from `AIChatViewModel+FileTools.swift` and
+/// `FileToolIO.swift` (`executeFileRead`, `executeFileEdit`, `applyEdit` and their helpers), which stay upstream's own;
 /// `FileToolDriftTests` fails when upstream changes those functions, so the change gets ported here.
 /// Callers handle path resolution, existence checks and the app-only `minis_url:` suffix.
 public enum FileToolLogic {

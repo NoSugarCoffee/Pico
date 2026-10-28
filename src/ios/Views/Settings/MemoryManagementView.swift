@@ -60,13 +60,17 @@ struct MemoryManagementView: View {
         .navigationTitle("Memory")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            // fork(remote-host): Xcode 27's SDK makes `if #available` in a toolbar builder require iOS 17.5, so
-            // the check moved to showsForceSync; .primaryAction (iOS 14+) sits where .topBarTrailing (iOS 17+) did.
+            // The iOS 17 check lives in `showsForceSync`, not here: an
+            // `if #available` inside a ToolbarContentBuilder needs
+            // buildLimitedAvailability, which the Xcode 27.1 SDK marks iOS
+            // 17.5+, so it no longer compiles for the 16.0 target.
             if showsForceSync {
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Button {
-                            Task { if #available(iOS 17.0, *) { await forceSyncMemory() } }
+                            if #available(iOS 17.0, *) {
+                                Task { await forceSyncMemory() }
+                            }
                         } label: {
                             Label(AppLocalized("Force iCloud Sync"),
                                   systemImage: "arrow.triangle.2.circlepath.icloud")
@@ -99,7 +103,7 @@ struct MemoryManagementView: View {
         }
     }
 
-    // fork(remote-host): see the toolbar.
+    /// Force sync needs iOS 17 (`forceSyncMemory`); on iOS 16 the menu stays hidden.
     private var showsForceSync: Bool {
         guard #available(iOS 17.0, *) else { return false }
         return iCloudSyncEnabled

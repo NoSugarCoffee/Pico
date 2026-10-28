@@ -19,32 +19,55 @@ set -e
 #   - pkg-config (brew install pkg-config) - optional
 #
 # Usage:
-#   ./build_ffmpeg.sh [clean]
+#   ./build_ffmpeg.sh [clean] [--simulator]
+#   ./build_ffmpeg.sh --xcframeworks     only rewrap existing frameworks
 #
-# Output (each with an ios-arm64 and an ios-arm64-simulator slice):
-#   deps/frameworks/FFmpeg.xcframework/
-#   deps/frameworks/lib{avcodec,avformat,avutil,avfilter,swresample,swscale}.xcframework/
+# Output:
+#   deps/frameworks/FFmpeg.framework/                          (device)
+#   deps/frameworks/lib{avcodec,avformat,avutil,avfilter,swresample,swscale}.framework/
+#   deps/frameworks/iphonesimulator/*.framework                (--simulator, arm64)
+#   deps/frameworks/*.xcframework   what Xcode links and embeds: every platform
+#                                   built so far, rewrapped after each run
+#
+# The Simulator build runs in its own copy of the patched source tree
+# (ffmpeg-6.1.2-iphonesimulator/): FFmpeg configures in place and refuses an
+# out-of-tree build once the device build has configured the source tree.
+# MP3 encoding needs ./build_lame.sh --simulator first.
 # ============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FFMPEG_DIR="$SCRIPT_DIR/ffmpeg-6.1.2"
-XCFRAMEWORKS_DIR="$SCRIPT_DIR/frameworks"
-FRAMEWORK_NAMES=(FFmpeg libavcodec libavformat libavutil libavfilter libswresample libswscale)
+BUILD_DIR="$FFMPEG_DIR/build-ios"
+FRAMEWORK_DIR="$SCRIPT_DIR/frameworks/FFmpeg.framework"
+FRAMEWORKS_BASE="$SCRIPT_DIR/frameworks"
 
 IOS_DEPLOYMENT_TARGET="14.0"
 
-# fork(remote-host): every step runs once per platform, so the app can also run in the iOS Simulator on Apple
-# Silicon; create_xcframeworks then joins the two builds.
-select_platform() {
-    PLATFORM_NAME="$1"
-    SDK_NAME="$2"
-    MIN_VERSION_FLAG="$3"
-    SUPPORTED_PLATFORM="$4"
-    LAME_DIR="$5"
-    BUILD_DIR="$FFMPEG_DIR/build-$PLATFORM_NAME"
-    FRAMEWORKS_BASE="$SCRIPT_DIR/.cache/ffmpeg-$PLATFORM_NAME"
+# Platform: iphoneos (default) or iphonesimulator (--simulator).
+PLATFORM="iphoneos"
+CLEAN=0
+XCFRAMEWORKS_ONLY=0
+for arg in "$@"; do
+    case "$arg" in
+        clean) CLEAN=1 ;;
+        --simulator) PLATFORM="iphonesimulator" ;;
+        --xcframeworks) XCFRAMEWORKS_ONLY=1 ;;
+        *) echo "Unknown argument: $arg (expected clean, --simulator, --xcframeworks)" >&2; exit 1 ;;
+    esac
+done
+PATCH_SOURCE_DIR="$FFMPEG_DIR"   # the tree the patches are applied to
+MIN_FLAG="-miphoneos-version-min=$IOS_DEPLOYMENT_TARGET"
+PLIST_PLATFORM="iPhoneOS"
+LAME_DIR="$SCRIPT_DIR/lame-build"
+if [ "$PLATFORM" == "iphonesimulator" ]; then
+    FFMPEG_DIR="$SCRIPT_DIR/ffmpeg-6.1.2-iphonesimulator"
+    BUILD_DIR="$FFMPEG_DIR/build-ios"
+    FRAMEWORKS_BASE="$SCRIPT_DIR/frameworks/iphonesimulator"
     FRAMEWORK_DIR="$FRAMEWORKS_BASE/FFmpeg.framework"
-}
+    MIN_FLAG="-mios-simulator-version-min=$IOS_DEPLOYMENT_TARGET"
+    PLIST_PLATFORM="iPhoneSimulator"
+    LAME_DIR="$SCRIPT_DIR/lame-build-iphonesimulator"
+fi
 
 # Colors for output
 RED='\033[0;31m'
@@ -76,11 +99,11 @@ log_error() {
 clean_build() {
     log_info "Cleaning build artifacts..."
 
-    rm -rf "$FFMPEG_DIR"/build-ios "$FFMPEG_DIR"/build-ios-simulator
-    rm -rf "$SCRIPT_DIR"/.cache/ffmpeg-ios "$SCRIPT_DIR"/.cache/ffmpeg-ios-simulator
-    for name in "${FRAMEWORK_NAMES[@]}"; do
-        rm -rf "$XCFRAMEWORKS_DIR/$name.xcframework" "$XCFRAMEWORKS_DIR/$name.framework"
-    done
+    rm -rf "$BUILD_DIR"
+    rm -rf "$FRAMEWORK_DIR"
+    rm -rf "$FRAMEWORKS_BASE"/lib*.framework
+    rm -rf "$SCRIPT_DIR/ffmpeg-6.1.2-iphonesimulator" "$SCRIPT_DIR/frameworks/iphonesimulator"
+    rm -rf "$FRAMEWORKS_BASE"/*.xcframework
 
     # Revert main rename patch if applied
     if [ -f "$FFMPEG_DIR/fftools/ffmpeg.c" ]; then
@@ -115,7 +138,7 @@ check_prerequisites() {
 
     # The FFmpeg source tree is not tracked in git (it is upstream source, not
     # ours), so fetch it on first run instead of failing on a fresh clone.
-    if [ ! -d "$FFMPEG_DIR" ]; then
+    if [ ! -d "$PATCH_SOURCE_DIR" ]; then
         fetch_ffmpeg_source
     fi
 
@@ -144,9 +167,9 @@ fetch_ffmpeg_source() {
         log_error "Failed to extract $tarball"
     fi
 
-    mv "$tmp/ffmpeg-${version}" "$FFMPEG_DIR"
+    mv "$tmp/ffmpeg-${version}" "$PATCH_SOURCE_DIR"
     rm -rf "$tmp"
-    log_success "FFmpeg ${version} source ready at $FFMPEG_DIR"
+    log_success "FFmpeg ${version} source ready at $PATCH_SOURCE_DIR"
 }
 
 # ============================================================================
@@ -155,7 +178,7 @@ fetch_ffmpeg_source() {
 patch_main_symbol() {
     log_info "Patching main() -> ffmpeg_main() in fftools/ffmpeg.c..."
 
-    FFMPEG_C="$FFMPEG_DIR/fftools/ffmpeg.c"
+    FFMPEG_C="$PATCH_SOURCE_DIR/fftools/ffmpeg.c"
 
     if grep -q 'int ffmpeg_main(' "$FFMPEG_C"; then
         log_info "Already patched, skipping"
@@ -190,34 +213,45 @@ apply_source_patches() {
     for p in "${patches[@]}"; do
         local name; name="$(basename "$p")"
         # Idempotent: skip if already applied (reverse dry-run succeeds)
-        if (cd "$FFMPEG_DIR" && patch -p1 -R --dry-run -s -f < "$p") >/dev/null 2>&1; then
+        if (cd "$PATCH_SOURCE_DIR" && patch -p1 -R --dry-run -s -f < "$p") >/dev/null 2>&1; then
             log_info "  $name — already applied, skipping"
             continue
         fi
-        if ! (cd "$FFMPEG_DIR" && patch -p1 --dry-run -s -f < "$p") >/dev/null 2>&1; then
+        if ! (cd "$PATCH_SOURCE_DIR" && patch -p1 --dry-run -s -f < "$p") >/dev/null 2>&1; then
             log_error "  $name — cannot apply cleanly"
         fi
-        (cd "$FFMPEG_DIR" && patch -p1 -s < "$p")
+        (cd "$PATCH_SOURCE_DIR" && patch -p1 -s < "$p")
         log_success "  $name"
     done
+}
+
+# ============================================================================
+# Simulator: a separate copy of the patched source tree
+# ============================================================================
+prepare_platform_source() {
+    [ "$PLATFORM" == "iphonesimulator" ] || return 0
+    log_info "Preparing a separate source tree for the Simulator..."
+    # A fresh copy each time, so nothing configured for the device survives.
+    rm -rf "$FFMPEG_DIR"
+    rsync -a --exclude 'build-ios' --exclude '*.o' --exclude '*.d' --exclude '*.dylib' \
+        --exclude '*.a' "$PATCH_SOURCE_DIR/" "$FFMPEG_DIR/"
+    (cd "$FFMPEG_DIR" && { [ ! -f ffbuild/config.mak ] || make distclean >/dev/null 2>&1 || true; })
+    rm -f "$FFMPEG_DIR/config.h" "$FFMPEG_DIR/ffbuild/config.mak"
+    log_success "Simulator source tree ready at $FFMPEG_DIR"
 }
 
 # ============================================================================
 # Configure FFmpeg
 # ============================================================================
 configure_ffmpeg() {
-    log_info "Configuring FFmpeg for $SDK_NAME arm64..."
+    log_info "Configuring FFmpeg for $PLATFORM arm64..."
 
-    IOS_SDK=$(xcrun --sdk "$SDK_NAME" --show-sdk-path)
-    CC="$(xcrun --sdk "$SDK_NAME" -f clang)"
+    IOS_SDK=$(xcrun --sdk "$PLATFORM" --show-sdk-path)
+    CC="$(xcrun --sdk "$PLATFORM" -f clang)"
 
     mkdir -p "$BUILD_DIR"
 
     cd "$FFMPEG_DIR"
-    # One source tree serves both platforms.
-    if [ -f ffbuild/config.mak ]; then
-        make distclean >/dev/null
-    fi
 
     # Check for libmp3lame (built by build_lame.sh)
     LAME_FLAGS=""
@@ -240,8 +274,8 @@ configure_ffmpeg() {
         --target-os=darwin \
         --cc="$CC" \
         --sysroot="$IOS_SDK" \
-        --extra-cflags="-arch arm64 $MIN_VERSION_FLAG=$IOS_DEPLOYMENT_TARGET -fembed-bitcode -DCONFIG_FFMPEG_MAIN=1 $LAME_CFLAGS" \
-        --extra-ldflags="-arch arm64 $MIN_VERSION_FLAG=$IOS_DEPLOYMENT_TARGET -isysroot $IOS_SDK $LAME_LDFLAGS" \
+        --extra-cflags="-arch arm64 $MIN_FLAG -fembed-bitcode -DCONFIG_FFMPEG_MAIN=1 $LAME_CFLAGS" \
+        --extra-ldflags="-arch arm64 $MIN_FLAG -isysroot $IOS_SDK $LAME_LDFLAGS" \
         --enable-pic \
         --enable-videotoolbox \
         --enable-hwaccel=h264_videotoolbox \
@@ -295,8 +329,8 @@ build_ffmpeg() {
 build_fftools() {
     log_info "Building fftools (ffmpeg_main)..."
 
-    IOS_SDK=$(xcrun --sdk "$SDK_NAME" --show-sdk-path)
-    CC="$(xcrun --sdk "$SDK_NAME" -f clang)"
+    IOS_SDK=$(xcrun --sdk "$PLATFORM" --show-sdk-path)
+    CC="$(xcrun --sdk "$PLATFORM" -f clang)"
     INSTALL_DIR="$BUILD_DIR/install"
 
     FFTOOLS_OBJ_DIR="$BUILD_DIR/fftools-objs"
@@ -326,7 +360,7 @@ build_fftools() {
     )
 
     # Common CFLAGS: use the source tree for headers (has config.h, libav* headers, and libavdevice)
-    FFTOOLS_CFLAGS="-arch arm64 $MIN_VERSION_FLAG=$IOS_DEPLOYMENT_TARGET -isysroot $IOS_SDK"
+    FFTOOLS_CFLAGS="-arch arm64 $MIN_FLAG -isysroot $IOS_SDK"
     FFTOOLS_CFLAGS="$FFTOOLS_CFLAGS -I$FFMPEG_DIR -I$INSTALL_DIR/include"
     FFTOOLS_CFLAGS="$FFTOOLS_CFLAGS -DCONFIG_FFMPEG_MAIN=1 -Oz -fPIC"
     # Force-include the stdio redirect header so all fprintf/printf/fputs/vfprintf
@@ -346,7 +380,7 @@ build_fftools() {
     # Compile the stdio redirect implementation WITHOUT the -include flag
     # to avoid recursive macro expansion.
     log_info "  Compiling fftools/fftools_stdio_redirect.c..."
-    REDIRECT_CFLAGS="-arch arm64 $MIN_VERSION_FLAG=$IOS_DEPLOYMENT_TARGET -isysroot $IOS_SDK"
+    REDIRECT_CFLAGS="-arch arm64 $MIN_FLAG -isysroot $IOS_SDK"
     REDIRECT_CFLAGS="$REDIRECT_CFLAGS -I$FFMPEG_DIR -I$INSTALL_DIR/include -Oz -fPIC"
     $CC $REDIRECT_CFLAGS -c fftools/fftools_stdio_redirect.c -o "$FFTOOLS_OBJ_DIR/fftools_stdio_redirect.o"
     FFTOOLS_OBJS+=("$FFTOOLS_OBJ_DIR/fftools_stdio_redirect.o")
@@ -365,8 +399,8 @@ package_framework() {
     log_info "Packaging individual .framework bundles + FFmpeg.framework..."
 
     INSTALL_DIR="$BUILD_DIR/install"
-    IOS_SDK=$(xcrun --sdk "$SDK_NAME" --show-sdk-path)
-    CC="$(xcrun --sdk "$SDK_NAME" -f clang)"
+    IOS_SDK=$(xcrun --sdk "$PLATFORM" --show-sdk-path)
+    CC="$(xcrun --sdk "$PLATFORM" -f clang)"
 
     # Clean previous output
     rm -rf "$FRAMEWORK_DIR"
@@ -443,7 +477,7 @@ package_framework() {
     <string>14.0</string>
     <key>CFBundleSupportedPlatforms</key>
     <array>
-        <string>${SUPPORTED_PLATFORM}</string>
+        <string>${PLIST_PLATFORM}</string>
     </array>
 </dict>
 </plist>
@@ -466,7 +500,7 @@ PLISTEOF
     # Link fftools static archive into the umbrella dylib
     # -force_load ensures all symbols (including ffmpeg_main) are included
     $CC -arch arm64 \
-        $MIN_VERSION_FLAG=$IOS_DEPLOYMENT_TARGET \
+        $MIN_FLAG \
         -isysroot "$IOS_SDK" \
         -dynamiclib \
         -install_name @rpath/FFmpeg.framework/FFmpeg \
@@ -564,7 +598,7 @@ EOF
     <string>14.0</string>
     <key>CFBundleSupportedPlatforms</key>
     <array>
-        <string>${SUPPORTED_PLATFORM}</string>
+        <string>${PLIST_PLATFORM}</string>
     </array>
 </dict>
 </plist>
@@ -578,18 +612,28 @@ EOF
 }
 
 # ============================================================================
-# Join the device and simulator frameworks
+# Wrap the frameworks into .xcframework bundles
 # ============================================================================
-create_xcframeworks() {
-    log_info "Creating .xcframework bundles..."
-    mkdir -p "$XCFRAMEWORKS_DIR"
-    for name in "${FRAMEWORK_NAMES[@]}"; do
-        rm -rf "$XCFRAMEWORKS_DIR/$name.xcframework" "$XCFRAMEWORKS_DIR/$name.framework"
-        xcodebuild -create-xcframework \
-            -framework "$SCRIPT_DIR/.cache/ffmpeg-ios/$name.framework" \
-            -framework "$SCRIPT_DIR/.cache/ffmpeg-ios-simulator/$name.framework" \
-            -output "$XCFRAMEWORKS_DIR/$name.xcframework" >/dev/null
-        log_success "$name.xcframework created"
+# The app references deps/frameworks/<name>.xcframework, so Xcode picks the
+# device or Simulator slice from the build destination for both linking and
+# embedding. Rebuilt from whatever platforms exist after every run: a machine
+# that only ever builds for devices gets a device-only xcframework.
+make_xcframeworks() {
+    local base="$SCRIPT_DIR/frameworks"
+    log_info "Packaging .xcframework bundles..."
+    for name in FFmpeg libavcodec libavformat libavutil libavfilter libswresample libswscale; do
+        local args=()
+        for dir in "$base" "$base/iphonesimulator"; do
+            [ -d "$dir/$name.framework" ] && args+=(-framework "$dir/$name.framework")
+        done
+        if [ ${#args[@]} -eq 0 ]; then
+            log_warning "$name.framework not built for any platform, skipping"
+            continue
+        fi
+        rm -rf "$base/$name.xcframework"
+        xcodebuild -create-xcframework "${args[@]}" -output "$base/$name.xcframework" >/dev/null \
+            || log_error "xcodebuild -create-xcframework failed for $name"
+        log_success "$name.xcframework ($(( ${#args[@]} / 2 )) platform(s))"
     done
 }
 
@@ -602,7 +646,6 @@ print_summary() {
     echo -e "${GREEN}🎉 FFmpeg 6.1.2 iOS Framework Build Complete!${NC}"
     echo "============================================================"
     echo ""
-    echo "Platform: $SDK_NAME"
     echo "Umbrella: $FRAMEWORK_DIR"
     ls -lh "$FRAMEWORK_DIR/FFmpeg" 2>/dev/null
     echo ""
@@ -631,15 +674,6 @@ print_summary() {
     echo "============================================================"
 }
 
-build_platform() {
-    select_platform "$@"
-    configure_ffmpeg
-    build_ffmpeg
-    build_fftools
-    package_framework
-    print_summary
-}
-
 # ============================================================================
 # Main
 # ============================================================================
@@ -652,17 +686,25 @@ main() {
     echo "============================================================"
     echo ""
 
-    if [ "$1" == "clean" ]; then
+    if [ "$CLEAN" == "1" ]; then
         clean_build
+        exit 0
+    fi
+    if [ "$XCFRAMEWORKS_ONLY" == "1" ]; then
+        make_xcframeworks
         exit 0
     fi
 
     check_prerequisites
     patch_main_symbol
     apply_source_patches
-    build_platform ios iphoneos -miphoneos-version-min iPhoneOS "$SCRIPT_DIR/lame-build"
-    build_platform ios-simulator iphonesimulator -mios-simulator-version-min iPhoneSimulator "$SCRIPT_DIR/lame-build-sim"
-    create_xcframeworks
+    prepare_platform_source
+    configure_ffmpeg
+    build_ffmpeg
+    build_fftools
+    package_framework
+    make_xcframeworks
+    print_summary
 }
 
 main "$@"

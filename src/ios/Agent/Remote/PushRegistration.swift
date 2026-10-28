@@ -245,29 +245,38 @@ enum PushRegistration {
     /// A removed host leaves no key behind and no record that would claim its name is still registered.
     /// The record stays when the keychain refuses, so the removal is retried on the next launch.
     static func forget(host: String) {
-        forget(host: host, droppingRecord: false)
+        forget(host: host, droppingRecord: false, deleteKey: deleteLiveKey,
+               records: Dependencies.liveRecords, saveRecords: Dependencies.saveLiveRecords)
     }
 
     /// An endpoint edit: the old record no longer describes this host, even when a key could not be deleted.
     static func forgetForReplacedHost(host: String) {
-        forget(host: host, droppingRecord: true)
+        forget(host: host, droppingRecord: true, deleteKey: deleteLiveKey,
+               records: Dependencies.liveRecords, saveRecords: Dependencies.saveLiveRecords)
     }
 
-    private static func forget(host: String, droppingRecord: Bool) {
+    private static func deleteLiveKey(host: String, keyID: String) throws {
+        try KeychainPushKeyStore(bundle: .main).deleteKey(host: host, keyID: keyID)
+    }
+
+    static func forget(
+        host: String, droppingRecord: Bool, deleteKey: (_ host: String, _ keyID: String) throws -> Void,
+        records loadRecords: () -> [String: PushRegistrationRecord],
+        saveRecords: ([String: PushRegistrationRecord]) -> Void
+    ) {
         invalidate(host: host)
-        var records = Dependencies.liveRecords()
+        var records = loadRecords()
         guard let record = records[host] else { return }
         do {
-            let keys = try KeychainPushKeyStore(bundle: .main)
             for keyID in record.keyIDs {
-                try keys.deleteKey(host: host, keyID: keyID)
+                try deleteKey(host, keyID)
             }
         } catch {
             logger.error("[PicoPush] could not delete the keys of \(host): \(error)")
             guard droppingRecord else { return }
         }
         records.removeValue(forKey: host)
-        Dependencies.saveLiveRecords(records)
+        saveRecords(records)
         logger.info("[PicoPush] forgot \(host)")
     }
 
