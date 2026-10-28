@@ -98,23 +98,44 @@ final class PushRegistrationTests: XCTestCase {
         XCTAssertNil(recorder.records["mac-mini"])
     }
 
-    func testForgettingAHostDropsOnlyItsRecord() throws {
-        let defaults = UserDefaults.standard
-        let saved = defaults.data(forKey: PushRegistration.recordsKey)
-        defer {
-            if let saved {
-                defaults.set(saved, forKey: PushRegistration.recordsKey)
-            } else {
-                defaults.removeObject(forKey: PushRegistration.recordsKey)
-            }
-        }
-        try defaults.set(JSONEncoder().encode([
-            "mac-mini": PushRegistrationRecord(token: "0f1e", keyID: "k1", lastError: nil, keyIDs: ["k1"]),
+    private func forget(_ host: String, droppingRecord: Bool, keychainRefuses: Bool, _ recorder: Recorder) {
+        PushRegistration.forget(
+            host: host, droppingRecord: droppingRecord,
+            deleteKey: { host, keyID in
+                recorder.steps.append("delete \(host) \(keyID)")
+                if keychainRefuses { throw SaveFailed() }
+            },
+            records: { recorder.records },
+            saveRecords: { recorder.records = $0 })
+    }
+
+    private func twoHosts() -> [String: PushRegistrationRecord] {
+        [
+            "mac-mini": PushRegistrationRecord(token: "0f1e", keyID: "k1", lastError: nil, keyIDs: ["k0", "k1"]),
             "other": PushRegistrationRecord(token: "0f1e", keyID: "k2", lastError: nil, keyIDs: ["k2"]),
-        ]), forKey: PushRegistration.recordsKey)
-        PushRegistration.forget(host: "mac-mini")
-        XCTAssertNil(PushRegistration.record(host: "mac-mini"))
-        XCTAssertEqual(PushRegistration.record(host: "other")?.keyID, "k2")
+        ]
+    }
+
+    func testForgettingAHostDropsOnlyItsRecord() {
+        let recorder = Recorder()
+        recorder.records = twoHosts()
+        forget("mac-mini", droppingRecord: false, keychainRefuses: false, recorder)
+        XCTAssertEqual(recorder.steps, ["delete mac-mini k0", "delete mac-mini k1"])
+        XCTAssertNil(recorder.records["mac-mini"])
+        XCTAssertEqual(recorder.records["other"]?.keyID, "k2")
+    }
+
+    func testARefusedKeyDeletionKeepsTheRecordUnlessTheHostWasReplaced() {
+        let removed = Recorder()
+        removed.records = twoHosts()
+        forget("mac-mini", droppingRecord: false, keychainRefuses: true, removed)
+        XCTAssertEqual(removed.records["mac-mini"]?.keyIDs, ["k0", "k1"], "kept so the next launch retries the deletion")
+
+        let replaced = Recorder()
+        replaced.records = twoHosts()
+        forget("mac-mini", droppingRecord: true, keychainRefuses: true, replaced)
+        XCTAssertNil(replaced.records["mac-mini"])
+        XCTAssertEqual(replaced.records["other"]?.keyID, "k2")
     }
 
     func testUnreadableRecordsAreKeptAsideAndReported() throws {
